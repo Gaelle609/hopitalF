@@ -9,7 +9,7 @@
           <img data-bs-img="light" id="modal-logo" src="../../assets/img/wecare.png" alt="Logo">
           <img data-bs-img="dark" id="modal-logo" src="../../assets/img/wecare.png" alt="Logo">
         </div>
-        <h4 id="modal-title"><b>Créer un patient</b></h4>
+        <h4 id="modal-title"><b class="text-theme-1">Créer un patient</b></h4>
       </div>
 
       <!-- Corps -->
@@ -94,7 +94,6 @@
 
            
     <!-- Main Content -->
-          <main class="adminuiux-content has-sidebar" onclick="contentClick()">
             <div class="container mt-4" id="main-content">
                 <div class="row align-items-center">
                     <div class="col-12 col-lg-8 mb-4 mb-lg-5">
@@ -245,18 +244,24 @@
                                                 <td>
                                                   <p class="small">{{ patient.phone }}</p>
                                                 </td>
-                                                <td>
-                                                  <span class="badge badge-sm light bg-yellow">payer</span>
+                                                <td> 
+                                                  <button
+                                                    class="btn btn-theme badge badge-sm cp"
+                                                    @click="$router.push({ name: 'PayService', params: { patientId: patient.id } })">
+                                                    Payer
+                                                  </button>
+
                                                 </td>
+                                                
                                                 <td>
                                                   <div class="dropdown d-inline-block">
                                                     <a class="btn btn-link no-caret" data-bs-toggle="dropdown">
                                                       <i class="bi bi-three-dots"></i>
                                                     </a>
                                                     <ul class="dropdown-menu dropdown-menu-end">
-                                                      <li><a class="dropdown-item" href="javascript:void(0)">Edité</a></li>
-                                                      <li><a class="dropdown-item" href="javascript:void(0)">Détailé</a></li>
-                                                      <li><a class="dropdown-item theme-red" href="javascript:void(0)">Suprimé</a></li>
+                                                      <li><a class="dropdown-item" href="javascript:void(0) cp">Edité</a></li>
+                                                      <li><a class="dropdown-item" href="javascript:void(0) cp">Détailé</a></li>
+                                                      <li><a class="dropdown-item theme-red" href="javascript:void(0) cp">Suprimé</a></li>
                                                     </ul>
                                                   </div>
                                                 </td>
@@ -272,7 +277,6 @@
                     
                 </div>
             </div>
-        </main>
 </template>
 
 <script>
@@ -346,7 +350,12 @@ export default {
     );
 
         if (response.data.success) {
-          alert("Patient créé avec succès !");
+          this.$swal.fire({
+        icon: 'success',
+        title: 'Patient créé avec succès !',
+        showConfirmButton: false,
+        timer: 2000
+      });
           this.getPatients(); 
           this.patientForm = {
             first_name: "",
@@ -363,13 +372,21 @@ export default {
           const modal = document.getElementById("createPatientModal");
           const modalInstance = bootstrap.Modal.getInstance(modal);
           modalInstance.hide();
+         setTimeout(() => {
+            window.location.reload();
+          }, 2000);
         }
       } catch (error) {
         console.error(error);
-        alert("Erreur lors de la création du patient.");
+        this.$swal.fire({
+      icon: 'error',
+      title: 'Erreur',
+      text: 'Erreur lors de la création du patient.'
+    });
       } finally {
         this.loading = false;
       }
+      //  window.location.reload();
     },
 
     // récupérer les patients
@@ -408,6 +425,9 @@ export default {
   color: rgb(59, 105, 255);
 }
 
+.cp {
+  cursor: pointer;
+}
 .form-control:focus {
   border-color: rgb(59, 105, 255);
   box-shadow: 0 0 5px rgba(59, 105, 255, 0.4);

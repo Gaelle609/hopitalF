@@ -1,6 +1,5 @@
 <template>
 
-  <main class="adminuiux-content has-sidebar" onclick="contentClick()">
             <div class="container mt-4" id="main-content">
 
               <div class="row align-items-center">
@@ -144,7 +143,6 @@
               </section>
               </div>
             </div>
-        </main>
 </template>
 
 
@@ -170,7 +168,7 @@ export default {
   },
 
  async mounted() {
-  try {
+  try {     
      const user = JSON.parse(localStorage.getItem("current_user"));
     const token = localStorage.getItem("current_token"); 
     const roles = JSON.parse(localStorage.getItem("current_role"));
