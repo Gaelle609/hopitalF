@@ -5,6 +5,8 @@ import LoginLayout from '../components/Layouts/Login.vue';
 import LoginForm from '../pages/LoginForm.vue';
 import Profile from '../pages/Profile.vue';
 import PayService from '../pages/patient/PayService.vue';
+import Caisse from '../pages/caisse/Caisse.vue';
+
 
 
 const routes = [
@@ -28,6 +30,11 @@ const routes = [
         path: 'payment/:patientId',
         name: 'PayService',
         component: PayService,
+      },
+       {
+        path: 'caisse/',
+        name: 'Caisse',
+        component: Caisse,
       },
 
     ],

@@ -41,8 +41,13 @@
                         <i class="menu-icon bi bi-bag-plus"></i> <span class="menu-name">Pharmacie</span></a></li>
                     <li class="nav-item"><a href="clinic-blogs.html" class="nav-link">
                         <i class="menu-icon bi bi-pass"></i> <span class="menu-name">Laboratoire</span></a></li>
-                    <li class="nav-item"><a href="clinic-billing.html" class="nav-link"><i
-                                class="menu-icon bi bi-cash-stack"></i> <span class="menu-name">Caisse</span></a></li>
+                   <li class="nav-item">
+                        <router-link :to="{ name: 'Caisse' }" class="nav-link">
+                            <i class="menu-icon bi bi-cash-stack"></i>
+                            <span class="menu-name">Caisse</span>
+                        </router-link>
+                        </li>
+
                     <li class="nav-item dropdown"><a href="javascrit:void(0)" class="nav-link dropdown-toggle"
                             data-bs-toggle="dropdown" aria-expanded="false"><i class="menu-icon"
                                 data-feather="folder"></i> <span class="menu-name">Documents</span></a>

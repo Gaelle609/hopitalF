@@ -1,9 +1,23 @@
 <template>
 
-            <div class="container mt-4" id="main-content">
-
+           <div class="container-fluid mt-3">
+                <div class="bg-theme-1-subtle rounded px-3 py-3">
+                    <div class="row gx-3 align-items-center">
+                        <div class="col-12 col-md mb-2 mb-sm-0">
+                            <p class="h5">Paiement de service</p>
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb mb-0">
+                                    <li class="breadcrumb-item bi"><router-link :to="{ name: 'HomePage' }">Accueil</router-link></li>
+                                    <li class="breadcrumb-item active bi" aria-current="page">Paiement</li>
+                                </ol>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+ <br>
               <div class="row align-items-center">
-                  <div class="pagetitle">
+                  <!-- <div class="pagetitle">
                   
                   <nav>
                     <ol class="breadcrumb">
@@ -12,7 +26,7 @@
                       <li class="breadcrumb-item active">Profil</li>
                     </ol>
                   </nav>
-                </div>
+                </div> -->
 
               <section class="section profile">
                 <div class="row g-4">
@@ -142,7 +156,6 @@
                 </div>
               </section>
               </div>
-            </div>
 </template>
 
 

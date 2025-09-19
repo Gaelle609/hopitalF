@@ -94,7 +94,6 @@
 
            
     <!-- Main Content -->
-            <div class="container mt-4" id="main-content">
                 <div class="row align-items-center">
                     <div class="col-12 col-lg-8 mb-4 mb-lg-5">
                         <div class="row align-items-center">
@@ -276,7 +275,6 @@
                     </div>
                     
                 </div>
-            </div>
 </template>
 
 <script>
@@ -418,7 +416,7 @@ export default {
   height: 80px;
   width: 80px;
   border-radius: 70rem;
-  background-color: blanchedalmond;
+  /* background-color: blanchedalmond; */
 }
 
 #modal-title {

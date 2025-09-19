@@ -18,7 +18,9 @@
      <div class="adminuiux-wrap">
       <Menu/>
        <main class="adminuiux-content has-sidebar" onclick="contentClick()">
-         <router-view :key="$route.fullPath"></router-view>
+         <div class="container mt-4" id="main-content">
+             <router-view :key="$route.fullPath"></router-view>
+         </div>
       </main>
     </div>
       <Footer/>
