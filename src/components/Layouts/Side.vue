@@ -29,9 +29,11 @@
                                         data-feather="table"></i> <span class="menu-name">Liste Patient
                                         </span></a></div>
                             
-                            <div class="nav-item"><a href="clinic-schedule-cards.html" class="nav-link"><i
-                                        class="menu-icon bi bi-thermometer-half"></i> <span class="menu-name">
-                                        Paramètre Patient</span></a></div>
+                            <div class="nav-item"> 
+                                <router-link :to="{ name: 'Parameter' }" class="nav-link">
+                                    <i class="menu-icon bi bi-thermometer-half"></i> 
+                                    <span class="menu-name"> Paramètre Patient</span>
+                                </router-link></div>
                             
                         </div>
                     </li>

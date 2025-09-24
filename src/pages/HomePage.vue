@@ -128,7 +128,7 @@
                                             <i class="bi bi-people fs-4"></i></div>
                                     </div>
                                     <div class="col px-0">
-                                        <p class="h4 mb-0">1320</p>
+                                        <p class="h4 mb-0">{{ totalPatients }}</p>
                                         <p class="text-secondary small">Patients Récu</p>
                                     </div>
                                     <div class="col-auto">
@@ -301,6 +301,18 @@ export default {
       },
       loading: false
     };
+  },
+  computed: {
+    patientList() {
+      if (this.patients && this.patients.patients && Array.isArray(this.patients.patients)) {
+        return this.patients.patients;
+      }
+      return [];
+    },
+
+    totalPatients() {
+      return this.patientList.length;
+    }
   },
   mounted() {
     this.setUserInfo();

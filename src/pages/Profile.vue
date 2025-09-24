@@ -4,11 +4,11 @@
                 <div class="bg-theme-1-subtle rounded px-3 py-3">
                     <div class="row gx-3 align-items-center">
                         <div class="col-12 col-md mb-2 mb-sm-0">
-                            <p class="h5">Paiement de service</p>
+                            <p class="h5">Profile Utilisateurs</p>
                             <nav aria-label="breadcrumb">
                                 <ol class="breadcrumb mb-0">
                                     <li class="breadcrumb-item bi"><router-link :to="{ name: 'HomePage' }">Accueil</router-link></li>
-                                    <li class="breadcrumb-item active bi" aria-current="page">Paiement</li>
+                                    <li class="breadcrumb-item active bi" aria-current="page">Profile</li>
                                 </ol>
                             </nav>
                         </div>

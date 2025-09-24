@@ -28,6 +28,7 @@
                                     </div>
                                     <div class="col px-0">
                                         <p class="h4 mb-0">{{recette}}</p>
+                                        <router-link :to="{ name: 'ListPay' }">Voir</router-link>
                                         <p class="text-secondary small">Caisse Des soins: <span class="text-success">{{recettel}}
                                                 <i class="bi bi-arrow-up"></i></span></p>
                                     </div>

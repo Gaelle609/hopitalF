@@ -6,6 +6,8 @@ import LoginForm from '../pages/LoginForm.vue';
 import Profile from '../pages/Profile.vue';
 import PayService from '../pages/patient/PayService.vue';
 import Caisse from '../pages/caisse/Caisse.vue';
+import ListPay from '../pages/caisse/ListPay.vue';
+import Parameter from '../pages/patient/Parameter.vue';
 
 
 
@@ -35,6 +37,16 @@ const routes = [
         path: 'caisse/',
         name: 'Caisse',
         component: Caisse,
+      },
+      {
+        path: 'listpay/',
+        name: 'ListPay',
+        component: ListPay,
+      },
+      {
+        path: 'param/',
+        name: 'Parameter',
+        component: Parameter,
       },
 
     ],
