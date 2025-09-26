@@ -3,14 +3,14 @@
     <div class="bg-theme-1-subtle rounded px-3 py-3">
       <div class="row gx-3 align-items-center">
         <div class="col-12 col-md mb-2 mb-sm-0">
-          <p class="h5">Profile Utilisateurs</p>
+          <p class="h5">Détails des Paiements Journalier</p>
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb mb-0">
               <li class="breadcrumb-item bi">
                 <router-link :to="{ name: 'HomePage' }">Accueil</router-link>
               </li>
               <li class="breadcrumb-item active bi" aria-current="page">
-                Profile
+                Paiements Journalier
               </li>
             </ol>
           </nav>
@@ -65,7 +65,7 @@
           </div>
           <div class="card-body px-2">
             <div class="table-responsive">
-              <table class="table table-hover table-sm" d="myTable">
+              <table class="table table-hover table-sm" id="myTable">
                 <thead class="table-light">
                   <tr>
                     <th>#</th>
