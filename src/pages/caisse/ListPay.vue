@@ -21,20 +21,18 @@
     <br />
 
     <div class="row">
-      <!-- Calendrier horizontal -->
-      <div class="col-12 mb-4">
-        <div class="card adminuiux-card">
-          <div class="card-header">
-            <p class="h6 mb-0">Calendrier des Paiements</p>
-            <small class="text-muted" v-if="selectedDate">
-              Paiements du {{ formatDate(selectedDate) }}
-            </small>
-          </div>
-          <div class="card-body p-3">
-            <div id="calendar" ref="calendar"></div>
-          </div>
-        </div>
-      </div>
+     <div class="col-12 col-md-4">
+  <div class="card adminuiux-card">
+    <div class="card-header">
+      <p class="h6 mb-0">Petit calendrier</p>
+    </div>
+    <div class="card-body p-2">
+      <div id="calendar" ref="calendar"></div>
+    </div>
+  </div>
+</div>
+
+    
       <!-- <div class="row">
           <div class="col-12 col-sm-6 col-xl-12 mb-4">
               <p class="h6 mb-3">Select Date</p>
@@ -215,43 +213,42 @@ export default {
       const calendarEl = document.getElementById("calendar");
 
       if (calendarEl) {
-        calendar.value = new Calendar(calendarEl, {
-          plugins: [dayGridPlugin, interactionPlugin],
-          initialView: "dayGridMonth",
-          locale: "fr",
-          headerToolbar: {
-            left: "prev,next today",
-            center: "title",
-            right: "dayGridMonth,dayGridWeek"
-          },
-          height: 'auto',
-          contentHeight: 'auto',
-          aspectRatio: 2.5, // Plus horizontal
-          dateClick: (info) => {
-            fetchPayments(info.dateStr);
-            // Ajout d'un effet visuel sur la date cliquée
-            document.querySelectorAll('.fc-day').forEach(day => {
-              day.classList.remove('fc-day-selected');
-            });
-            info.dayEl.classList.add('fc-day-selected');
-          },
-          datesSet: () => {
-            // Réinitialiser la sélection quand on change de mois
-            setTimeout(() => {
-              document.querySelectorAll('.fc-day').forEach(day => {
-                day.classList.remove('fc-day-selected');
-              });
-            }, 100);
-          }
-        });
-
-        calendar.value.render();
-        
-        // Afficher les paiements du jour par défaut
-        const today = new Date().toISOString().split('T')[0];
-        fetchPayments(today);
-      }
+       calendar.value = new Calendar(calendarEl, {
+  plugins: [dayGridPlugin, interactionPlugin],
+  initialView: "dayGridMonth",
+  locale: "fr",
+  headerToolbar: {
+    left: "prev,next today",
+    center: "title",
+    right: ""
+  },
+  height: "auto",
+  aspectRatio: 0, // 👈 plus petit
+  contentHeight: 0, // 👈 limite la hauteur
+  dateClick: (info) => {
+    fetchPayments(info.dateStr);
+    document.querySelectorAll('.fc-day').forEach(day => {
+      day.classList.remove('fc-day-selected');
     });
+    info.dayEl.classList.add('fc-day-selected');
+  },
+  datesSet: () => {
+    // Réinitialiser la sélection quand on change de mois
+    setTimeout(() => {
+      document.querySelectorAll('.fc-day').forEach(day => {
+        day.classList.remove('fc-day-selected');
+      });
+    }, 100);
+  }
+});
+
+      calendar.value.render();
+      
+      // Afficher les paiements du jour par défaut
+      const today = new Date().toISOString().split('T')[0];
+      fetchPayments(today);
+    }
+  });
 
     return {
       payments,
@@ -270,9 +267,12 @@ export default {
 
 <style scoped>
 #calendar {
-  max-width: 100%;
+  max-width: 400px;   /* largeur max */
+  height: 300px;      /* hauteur réduite */
   margin: auto;
+  font-size: 0.8rem;  /* texte plus petit */
 }
+
 
 /* Styles pour le calendrier */
 :deep(.fc) {

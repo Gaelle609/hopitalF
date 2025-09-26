@@ -23,10 +23,10 @@
 
   <!-- Table des patients -->
   <div class="row">
-    <div class="col-12 col-lg-12 col-xxl-9">
+    <div class="col-12 col-lg-12 col-xxl-9 w-50">
       <div class="card adminuiux-card mb-4">
         <div class="card-header">
-          <p class="h6">Patient Appointments</p>
+          <p class="h6">Prendre les paramètre</p>
         </div>
         <div class="card-body px-2">
           <!-- Affichage pendant le chargement -->
@@ -63,8 +63,10 @@
                   </td>
                   <td>
                     <button
-                      class="btn btn-theme badge badge-sm cp">
-                      Payer
+                      class="btn btn-theme badge badge-sm cp"
+                      @click="selectPatient(patient)"
+                    >
+                      Paramètre
                     </button>
                   </td>
                   <!-- <td>
@@ -97,8 +99,9 @@
         </div>
       </div>
     </div>
-    <form class="w-50" @submit.prevent="submitPayment">
-      <div class="card border-0 shadow text-center px-4">
+    <div class="col-12 col-lg-12 col-xxl-3 w-50">
+    <form  @submit.prevent="submitForm">
+      <div class="card  shadow text-center px-4">
         <div class="d-flex justify-content-center mt-3 mb-2">
           <img id="img" src="../../assets/img/wecare.png" alt="Logo">
         </div>
@@ -110,42 +113,35 @@
             <input type="text" class="form-control" :value="patientName" disabled />
           </div> -->
 
-          <!-- Service -->
-          <div class="mb-3">
-            <label class="form-label">Motif Paiement</label>
-            <select class="form-control" v-model="payment.motif" >
-              <option value="" disabled>Choisir un service</option>
-              <option v-for="service in services" :key="service.id" :value="service.name">
-                
-              </option>
-            </select>
-          </div>
-
-
           <!-- Versé -->
           <div class="mb-3">
-            <label class="form-label">Versé</label>
-            <input type="number" class="form-control"  v-model="payment.verser"  />
+            <label class="form-label">Tension</label>
+            <input type="number" v-model="consform.tension" class="form-control"/>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Temperature</label>
+            <input type="number" v-model="consform.temperature" class="form-control"/>
           </div>
 
           <!-- Total -->
-          <div class="mb-3"  hidden>
-            <label class="form-label">Total</label>
-            <input type="number" class="form-control" v-model="payment.total" readonly  />
+          <div class="mb-3">
+            <label class="form-label">Poids</label>
+            <input type="number" v-model="consform.poids" class="form-control"/>
           </div>
 
           
 
-          <!-- Reste -->
-          <div class="mb-4">
-            <label class="form-label">Reste</label>
-            <input type="number" class="form-control" v-model="payment.reste" readonly />
+          <div class="mb-3">
+            <label class="form-label">Patient ID</label>
+            <input type="text" class="form-control" v-model="consform.patient_id" disabled />
           </div>
 
           <button id="btn" type="submit" class="btn btn-theme w-100">Valider</button>
         </div>
       </div>
     </form>
+    </div>
   </div>
 </template>
 
@@ -158,7 +154,16 @@ export default {
      
       patients: {}, 
       loading: false,
-      loadingPatients: true
+      loadingPatients: true,
+      selectedPatient: null,
+       consform: {
+        temperature: "",
+        tension: "",
+        poids: 0,
+        patient_id:null,
+        id_per: null,
+        
+      }
     };
   },
 
@@ -182,6 +187,12 @@ export default {
   },
 
   methods: {
+    selectPatient(patient) {
+      this.selectedPatient = patient;
+      this.consform.patient_id = patient.id; // ✅ met à jour le formulaire
+      console.log("Patient sélectionné:", this.selectedPatient);
+    },
+
     async deletePatient(patientId) {
       if (confirm('Êtes-vous sûr de vouloir supprimer ce patient ?')) {
         try {
@@ -211,13 +222,13 @@ export default {
       }
     },
 
-    async submitPatientForm() {
+    async submitForm() {
       this.loading = true;
       try {
         const token = localStorage.getItem("current_token");
 
-        const response = await axios.post(`http://127.0.0.1:8000/api/patients`, 
-          this.patientForm, 
+        const response = await axios.post(`http://127.0.0.1:8000/api/consultations`, 
+          this.consform, 
           {
             headers: {
               "Content-Type": "multipart/form-data",
@@ -229,38 +240,31 @@ export default {
         if (response.data.success) {
           this.$swal.fire({
             icon: 'success',
-            title: 'Patient créé avec succès !',
+            title: 'paramètre de patient enregistré avec succès !',
             showConfirmButton: false,
             timer: 2000
           });
           
-          // Recharger les patients
-          await this.getPatients();
-          
           // Réinitialiser le formulaire
-          this.patientForm = {
-            first_name: "",
-            last_name: "",
-            phone: "",
-            gender: "",
-            address: "",
-            emergency_contact: "",
-            matrimonial_situation: "",
-            place_of_birth: "",
-            age: null
+          this.consform = {
+            temperature: "",
+        tension: "",
+        poids: 0,
+        patient_id:null,
+        id_per: null,
           };
           
-          // Fermer le modal
-          const modal = document.getElementById("createPatientModal");
-          const modalInstance = bootstrap.Modal.getInstance(modal);
-          modalInstance.hide();
+          // // Fermer le modal
+          // const modal = document.getElementById("createPatientModal");
+          // const modalInstance = bootstrap.Modal.getInstance(modal);
+          // modalInstance.hide();
         }
       } catch (error) {
         console.error(error);
         this.$swal.fire({
           icon: 'error',
           title: 'Erreur',
-          text: 'Erreur lors de la création du patient.'
+          text: "Erreur lors de l'enregistrement du patient."
         });
       } finally {
         this.loading = false;
@@ -276,7 +280,7 @@ export default {
           throw new Error("Token d'authentification manquant");
         }
 
-        const response = await axios.get(`http://127.0.0.1:8000/api/patients`, {
+        const response = await axios.get(`http://127.0.0.1:8000/api/caisse/done`, {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -337,5 +341,72 @@ export default {
 
 .table td {
   vertical-align: middle;
+}
+
+#img { 
+  height: 80px; 
+  width: 80px; 
+  border-radius: 70rem; 
+}
+#btn:hover { 
+  box-shadow: 3px 3px 3px rgb(59, 105, 255); 
+}
+i.bi-printer { 
+  font-size: 1.2rem; 
+}
+
+#receipt {
+  width: 210mm;           
+  min-height: 148mm;       
+  background: #fff;
+  color: #000;
+  /* padding: 20mm; */
+  font-family: 'Courier New', monospace;
+  /* border: 1px solid #ccc; */
+  /* box-shadow: none; */
+}
+
+#receipt h4 {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+.receipt-body p {
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+}
+
+#logo {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+  margin-right: -20px;
+}
+
+.receipt-content {
+  font-size: 0.9rem;
+  margin-left: -30px;
+}
+
+/* .receipt-body p {
+  margin-bottom: 0.4rem;
+  font-size: 0.95rem;
+} */
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #receipt, #receipt * {
+    visibility: visible;
+  }
+  #receipt {
+    position: absolute;
+    left: 100;
+    top: 100;
+    width: 100%;
+  }}
+.receipt-content strong {
+  font-weight: bold;
 }
 </style>
