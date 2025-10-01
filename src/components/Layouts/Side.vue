@@ -12,10 +12,11 @@
                                 aria-controls="usersidebarprofile"><i data-feather="user"></i></a></div>
                     </div>
                     <div class="text-center collapse" id="usersidebarprofile">
-                        <figure class="avatar avatar-100 rounded-circle coverimg my-3"><img
-                                src="../../assets/img/modern-ai-image/user-6.jpg" alt=""></figure>
-                        <p class="mb-1 h5">Dr. Alice</p>
-                        <p class="small">The Clinical UI Kit</p>
+                        <figure class="avatar avatar-100 rounded-circle coverimg my-3">
+                            <img :src="user.picture || defaultAvatar" alt="" id="userphotoonboarding2">
+                        </figure>
+                        <p class="mb-1 h5">Dr. {{ user.first_name }}</p>
+                        <p class="small">Le Chef de Centre</p>
                     </div>
                 </div>
                 <ul class="nav flex-column menu-active-line my-3">
@@ -37,8 +38,13 @@
                             
                         </div>
                     </li>
-                    <li class="nav-item"><a href="clinic-patients.html" class="nav-link"><i class="menu-icon"
-                                data-feather="user"></i> <span class="menu-name">Personnel</span></a></li>
+                    <li class="nav-item">
+                         <router-link :to="{ name: 'Personnel' }" class="nav-link">
+                            <i class= "menu-icon" data-feather="user"></i> 
+                            <span class="menu-name">Personnel</span>
+                        </router-link>
+                        
+                    </li>
                     <li class="nav-item"><a href="clinic-statistics.html" class="nav-link">
                         <i class="menu-icon bi bi-bag-plus"></i> <span class="menu-name">Pharmacie</span></a></li>
                     <li class="nav-item"><a href="clinic-blogs.html" class="nav-link">
@@ -98,3 +104,34 @@
         </div>
   </aside>
 </template>
+
+<script>
+export default {
+  data() {
+    return {
+      user: {},
+      defaultAvatar: "../../assets/img/avatar.jpg",
+      baseUrl: "http://127.0.0.1:8000/", // ton backend Laravel
+    };
+  },
+  mounted() {
+    const storedUser = localStorage.getItem("current_user");
+    if (storedUser) {
+      const parsedUser = JSON.parse(storedUser);
+
+      // si le user a une image, on lui ajoute l'URL complète
+      if (parsedUser.picture) {
+        parsedUser.picture = this.baseUrl + parsedUser.picture;
+      }
+
+      this.user = parsedUser;
+    } else {
+      this.user = {
+        first_name: "Utilisateur",
+        last_name: "",
+        picture: null,
+      };
+    }
+  }
+};
+</script>
