@@ -8,6 +8,7 @@ import PayService from '../pages/patient/PayService.vue';
 import Caisse from '../pages/caisse/Caisse.vue';
 import ListPay from '../pages/caisse/ListPay.vue';
 import Parameter from '../pages/patient/Parameter.vue';
+import indexPersonnel from '../pages/personnel/index.vue';
 
 
 
@@ -47,6 +48,11 @@ const routes = [
         path: 'param/',
         name: 'Parameter',
         component: Parameter,
+      },
+      {
+        path: 'personnel/',
+        name: 'indexPersonnel',
+        component: indexPersonnel,
       },
 
     ],
