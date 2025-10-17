@@ -65,10 +65,12 @@
             >
           </li>
           <li class="nav-item">
-            <a href="clinic-statistics.html" class="nav-link">
-              <i class="menu-icon bi bi-bag-plus"></i>
-              <span class="menu-name">Pharmacie</span></a
-            >
+
+            <router-link :to="{ name: 'Caisse' }" class="nav-link">
+             <i class="menu-icon bi bi-bag-plus"></i>
+              <span class="menu-name">Pharmacie</span>
+            </router-link>
+        
           </li>
           <li class="nav-item">
             <a href="clinic-blogs.html" class="nav-link">
@@ -82,6 +84,13 @@
               <span class="menu-name">Caisse</span>
             </router-link>
           </li>
+
+          <li class="nav-item">
+            <router-link :to="{ name: 'Service' }" class="nav-link">
+              <i data-feather="layers" class="me-0 me-md-1"></i>
+              <span class="menu-name">Service</span>
+            </router-link>
+          </li> 
 
           <li class="nav-item dropdown">
             <a
@@ -166,7 +175,6 @@
     </div>
   </aside>
 </template>
-<<<<<<< HEAD
 
 <script>
 export default {
@@ -198,5 +206,3 @@ export default {
   }
 };
 </script>
-=======
->>>>>>> 033003b57d396f8132b738ea095aebc5ee3cd411

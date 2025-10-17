@@ -40,11 +40,11 @@
                 <div class="col-md-6 mb-3">
                   <label class="form-label d-block">Sexe</label>
                   <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" value="Male" v-model="personnelForm.gender" required>
+                    <input class="form-check-input" type="radio" value="Masculin" v-model="personnelForm.gender" required>
                     <label class="form-check-label">Masculin</label>
                   </div>
                   <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" value="Female" v-model="personnelForm.gender">
+                    <input class="form-check-input" type="radio" value="Féminin" v-model="personnelForm.gender">
                     <label class="form-check-label">Féminin</label>
                   </div>
                 </div>
@@ -298,8 +298,8 @@
                     <p class="small mb-0">{{ personnel.phone_number }}</p>
                   </td>
                   <td>
-                    <span class="badge" :class="personnel.gender === 'Male' ? 'bg-primary' : 'bg-pink'">
-                      {{ personnel.gender === 'Male' ? 'Masculin' : 'Féminin' }}
+                    <span class="badge" :class="personnel.gender === 'Masculin' ? 'bg-primary' : 'bg-pink'">
+                      {{ personnel.gender === 'Masculin' ? 'Masculin' : 'Féminin' }}
                     </span>
                   </td>
                   <td>
