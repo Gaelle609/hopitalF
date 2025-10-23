@@ -65,10 +65,12 @@
             >
           </li>
           <li class="nav-item">
-            <a href="clinic-statistics.html" class="nav-link">
-              <i class="menu-icon bi bi-bag-plus"></i>
-              <span class="menu-name">Pharmacie</span></a
-            >
+
+            <router-link :to="{ name: 'Caisse' }" class="nav-link">
+             <i class="menu-icon bi bi-bag-plus"></i>
+              <span class="menu-name">Pharmacie</span>
+            </router-link>
+        
           </li>
           <li class="nav-item">
             <a href="clinic-blogs.html" class="nav-link">
@@ -82,6 +84,13 @@
               <span class="menu-name">Caisse</span>
             </router-link>
           </li>
+
+          <li class="nav-item">
+            <router-link :to="{ name: 'Service' }" class="nav-link">
+              <i data-feather="layers" class="me-0 me-md-1"></i>
+              <span class="menu-name">Service</span>
+            </router-link>
+          </li> 
 
           <li class="nav-item dropdown">
             <a
@@ -166,3 +175,34 @@
     </div>
   </aside>
 </template>
+
+<script>
+export default {
+  data() {
+    return {
+      user: {},
+      defaultAvatar: "../../assets/img/avatar.jpg",
+      baseUrl: "http://127.0.0.1:8000/", // ton backend Laravel
+    };
+  },
+  mounted() {
+    const storedUser = localStorage.getItem("current_user");
+    if (storedUser) {
+      const parsedUser = JSON.parse(storedUser);
+
+      // si le user a une image, on lui ajoute l'URL complète
+      if (parsedUser.picture) {
+        parsedUser.picture = this.baseUrl + parsedUser.picture;
+      }
+
+      this.user = parsedUser;
+    } else {
+      this.user = {
+        first_name: "Utilisateur",
+        last_name: "",
+        picture: null,
+      };
+    }
+  }
+};
+</script>

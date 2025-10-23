@@ -40,11 +40,11 @@
                 <div class="col-md-6 mb-3">
                   <label class="form-label d-block">Sexe</label>
                   <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" value="Male" v-model="personnelForm.gender" required>
+                    <input class="form-check-input" type="radio" value="Masculin" v-model="personnelForm.gender" required>
                     <label class="form-check-label">Masculin</label>
                   </div>
                   <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" value="Female" v-model="personnelForm.gender">
+                    <input class="form-check-input" type="radio" value="Féminin" v-model="personnelForm.gender">
                     <label class="form-check-label">Féminin</label>
                   </div>
                 </div>
@@ -54,10 +54,21 @@
                   <input type="text" class="form-control" v-model="personnelForm.adress" required>
                 </div>
 
-                <div class="col-md-6 mb-3">
+                <div class="mb-3">
+                  <label class="form-label">Fonction</label>
+                  <select class="form-control" v-model="personnelForm.role_id" required>
+                    <option value="" disabled>Choisir une fonction</option>
+                    <option v-for="role in roles" :key="role.id" :value="role.id">
+                      {{ role.name }}
+                    </option>
+                  </select>
+
+                </div>
+
+                <!-- <div class="col-md-6 mb-3">
                   <label class="form-label">Mot de passe</label>
                   <input type="password" class="form-control" v-model="personnelForm.password" :required="!isEditing">
-                </div>
+                </div> -->
 
                 <div class="col-md-6 mb-3">
                   <label class="form-label">Photo de profil</label>
@@ -287,8 +298,8 @@
                     <p class="small mb-0">{{ personnel.phone_number }}</p>
                   </td>
                   <td>
-                    <span class="badge" :class="personnel.gender === 'Male' ? 'bg-primary' : 'bg-pink'">
-                      {{ personnel.gender === 'Male' ? 'Masculin' : 'Féminin' }}
+                    <span class="badge" :class="personnel.gender === 'Masculin' ? 'bg-primary' : 'bg-pink'">
+                      {{ personnel.gender === 'Masculin' ? 'Masculin' : 'Féminin' }}
                     </span>
                   </td>
                   <td>
@@ -341,10 +352,12 @@ export default {
       userAvatar: "../../assets/img/avatar.jpg",
       baseUrl: "http://127.0.0.1:8000/",
       personnelList: [],
+      roles: [],
       personnelForm: {
         first_name: "",
         last_name: "",
         email: "",
+        role_id: "",
         phone_number: "",
         gender: "",
         adress: "",
@@ -365,6 +378,7 @@ export default {
   mounted() {
     this.setUserInfo();
     this.getPersonnel();
+    //  this.loadRole();
   },
   methods: {
     setUserInfo() {
@@ -393,11 +407,13 @@ export default {
       this.personnelForm.picture = event.target.files[0];
     },
 
-    openCreateModal() {
-      this.isEditing = false;
-      this.editingId = null;
-      this.resetForm();
-    },
+    async openCreateModal() {
+    this.isEditing = false;
+    this.editingId = null;
+    await this.loadRole(); // charger les rôles avant d'ouvrir le modal
+    this.resetForm();
+  },
+
 
     async submitPersonnelForm() {
       this.loading = true;
@@ -512,7 +528,13 @@ export default {
       document.getElementById('modal-title').querySelector('b').textContent = 'Modifier le Personnel';
       modal.show();
     },
-
+ async loadRole() {
+      const token = localStorage.getItem("current_token");
+      const response = await axios.get(`http://127.0.0.1:8000/api/roles`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      this.roles = response.data.data.roles;
+    },
     async deletePersonnel(id) {
       const result = await this.$swal.fire({
         title: 'Êtes-vous sûr?',
@@ -559,6 +581,7 @@ export default {
         first_name: "",
         last_name: "",
         email: "",
+        role_id: "",
         phone_number: "",
         gender: "",
         adress: "",

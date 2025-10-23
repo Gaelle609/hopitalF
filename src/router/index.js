@@ -9,6 +9,9 @@ import Caisse from '../pages/caisse/Caisse.vue';
 import ListPay from '../pages/caisse/ListPay.vue';
 import Parameter from '../pages/patient/Parameter.vue';
 import indexPersonnel from '../pages/personnel/index.vue';
+import Service from '../pages/service/Service.vue';
+import Product from '../pages/pharmacie/Product.vue';
+
 
 
 
@@ -53,6 +56,17 @@ const routes = [
         path: 'personnel/',
         name: 'indexPersonnel',
         component: indexPersonnel,
+      },
+      {
+        path: 'service/',
+        name: 'Service',
+        component: Service,
+      },
+
+      {
+        path: 'product/',
+        name: 'Product',
+        component: Product,
       },
 
     ],
