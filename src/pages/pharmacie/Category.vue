@@ -66,11 +66,10 @@
             <div class="height-50 width-50 position-relative">
               
              <router-link 
-                :to="{ name: 'HomePage' }" 
-                class="btn btn-success btn-sm rounded-pill text-white text-decoration-none"
-              >
+                :to="{ name: 'Product', query: { categoryId: category.id } }" 
+                class="btn btn-theme btn-sm rounded-pill text-decoration-none">
                 Voir
-              </router-link>
+            </router-link>
 
             </div>
           </div>
@@ -79,7 +78,7 @@
         <div class="row mt-2">
           <div class="col text-end">
             <button 
-              class="btn btn-outline-primary btn-sm me-1"
+              class="btn btn-outline-theme btn-sm me-1"
               @click="editCategory(category)"
               title="Modifier"
             >

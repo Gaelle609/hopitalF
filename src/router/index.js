@@ -11,6 +11,7 @@ import Parameter from '../pages/patient/Parameter.vue';
 import indexPersonnel from '../pages/personnel/index.vue';
 import Service from '../pages/service/Service.vue';
 import Product from '../pages/pharmacie/Product.vue';
+import Category from '../pages/pharmacie/Category.vue';
 
 
 
@@ -62,7 +63,11 @@ const routes = [
         name: 'Service',
         component: Service,
       },
-
+      {
+        path: 'category/',
+        name: 'Category',
+        component: Category,
+      },
       {
         path: 'product/',
         name: 'Product',
