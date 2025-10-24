@@ -66,7 +66,7 @@
           </li>
           <li class="nav-item">
 
-            <router-link :to="{ name: 'Caisse' }" class="nav-link">
+            <router-link :to="{ name: 'Product' }" class="nav-link">
              <i class="menu-icon bi bi-bag-plus"></i>
               <span class="menu-name">Pharmacie</span>
             </router-link>
