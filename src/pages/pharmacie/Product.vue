@@ -10,18 +10,16 @@
               <li class="breadcrumb-item bi">
                 <router-link :to="{ name: 'HomePage' }">Accueil</router-link>
               </li>
-              <li class="breadcrumb-item active bi" aria-current="page">Catégorie de produits</li>
+              <li class="breadcrumb-item active bi" aria-current="page">
+                <router-link :to="{ name: 'Category' }"> Catégorie de produits </router-link>
+             </li>
+              <li class="breadcrumb-item active bi" aria-current="page">produits</li>
             </ol>
           </nav>
         </div>
         <div class="col-md text-end">
-          <button 
-            class="btn btn-theme"
-            data-bs-toggle="modal"
-            data-bs-target="#createCategoryModal"
-            @click="openCreateModal"
-          >
-            <i class="bi bi-plus-lg me-1"></i> Créer une Catégorie
+          <button class="btn btn-theme" data-bs-toggle="modal" data-bs-target="#createMedicamentModal" @click="openCreateModal">
+            <i class="bi bi-plus-lg me-1"></i> Créer un Produit
           </button>
         </div>
       </div>
@@ -37,99 +35,109 @@
     </div>
 
     <!-- ✅ Liste des catégories -->
-   <div v-else class="row g-4">
-  <div 
-    v-for="category in categories" 
-    :key="category.id" 
-    class="col-12 col-sm-6 col-lg-4"
-  >
-    <div class="card adminuiux-card mb-4 shadow-sm rounded-4">
-      <div class="card-body">
-        <div class="row gx-3 align-items-center">
-          <div class="col-auto">
-            <div class="avatar avatar-100 rounded b text-primary-emphasis">
-              <img 
-                :src="getCategoryImage(category.name)" 
-                alt="Icône catégorie"
-                class="img-fluid"
-                style="width: 100%; height: 100%; object-fit: cover;"
-              />
-            </div>
+   <!-- DataTable -->
+    <div class="row">
+      <div class="col-12">
+        <div class="card adminuiux-card mb-4">
+          <div class="card-header">
+            <p class="h6">Liste des Produits</p>
           </div>
-
-          <div class="col">
-            <p class="h4 mb-0">{{ category.medicaments_count || 0 }}</p>
-            <p class="text-secondary small">{{ category.name }}</p>
-          </div>
-
-          <div class="col-auto">
-            <div class="height-50 width-50 position-relative">
-              
-             <router-link 
-                :to="{ name: 'HomePage' }" 
-                class="btn btn-success btn-sm rounded-pill text-white text-decoration-none"
-              >
-                Voir
-              </router-link>
-
-            </div>
-          </div>
-        </div>
-
-        <div class="row mt-2">
-          <div class="col text-end">
-            <button 
-              class="btn btn-outline-primary btn-sm me-1"
-              @click="editCategory(category)"
-              title="Modifier"
-            >
-              <i class="bi bi-pencil"></i>
-            </button>
-            <button 
-              class="btn btn-outline-danger btn-sm"
-              @click="deleteCategory(category.id)"
-              title="Supprimer"
-            >
-              <i class="bi bi-trash"></i>
-            </button>
+          <div class="card-body px-2">
+            <table class="table" id="dataTable">
+              <thead>
+                <tr>
+                  <th>Code</th>
+                  <th>Nom</th>
+                  <th>Quantité</th>
+                  <th>Prix Unitaire</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="medicament in medicamentList" :key="medicament.id">
+                  <td>
+                    <p class="mb-0 fw-medium">{{ medicament.slug }}</p>
+                  </td>
+                  <td>
+                    <p class="small mb-0">{{ medicament.name }}</p>
+                  </td>
+                  <td>
+                    <p class="small mb-0">{{ medicament.quentity }}</p>
+                  </td>
+                  <td>
+                    <p class="small mb-0">{{ medicament.price }} FCFA</p>
+                  </td>
+                  <td>
+                    <div class="dropdown d-inline-block">
+                      <a class="btn btn-link no-caret cp" data-bs-toggle="dropdown">
+                        <i class="bi bi-three-dots"></i>
+                      </a>
+                      <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                             <router-link 
+                                :to="{ name: 'ViewProduct', query: { medicamentId: medicament.id } }" 
+                                class="btn btn-theme btn-sm dropdown-item cp">
+                                <i class="bi bi-eye me-2"></i>Voir Détails
+                            </router-link>
+                          <a class="">
+                           
+                          </a>
+                        </li>
+                        <li>
+                          <a class="dropdown-item cp" @click="editMedicament(medicament)">
+                            <i class="bi bi-pencil me-2"></i>Modifier
+                          </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                          <a class="dropdown-item theme-red cp" @click="deleteMedicament(medicament.id)">
+                            <i class="bi bi-trash me-2"></i>Supprimer
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
     </div>
-  </div>
-</div>
 
 
     <!-- ✅ Modal -->
     <div 
       class="modal fade"
-      id="createCategoryModal"
+      id="createMedicamentModal"
       tabindex="-1"
-      aria-labelledby="createCategoryModalLabel"
+      aria-labelledby="createMedicamentModalLabel"
       aria-hidden="true"
     >
-      <div class="modal-dialog modal-dialog-centered modal-sm">
+      <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow">
           <!-- Header -->
           <div class="text-center pt-4">
             <img src="../../assets/img/wecare.png" alt="Logo" width="100" class="mb-3" />
             <h5 class="fw-bold text-theme-1">
-              {{ isEditing ? 'Modifier la catégorie' : 'Créer une catégorie' }}
+              {{ isEditing ? 'Modifier le produit' : 'Créer un produit' }}
             </h5>
           </div>
 
           <!-- Body -->
           <div class="px-4 py-3">
-            <form @submit.prevent="saveCategory">
+            <form @submit.prevent="saveMedicament">
               <div class="mb-3">
-                <label class="form-label">Nom de la catégorie <span class="text-danger">*</span></label>
-                <input 
-                  type="text"
-                  class="form-control"
-                  v-model="categoryForm.name"
-                  placeholder="Ex : Comprimés, Sirops, Injections..."
-                  required
-                />
+                <label class="form-label">Nom du produit <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" v-model="medicamentForm.name" required/>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Quantité du produit <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" v-model="medicamentForm.quentity" required/>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Prix unitaire <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" v-model="medicamentForm.price" required/>
               </div>
             </form>
           </div>
@@ -139,7 +147,7 @@
             <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">
               Fermer
             </button>
-            <button type="button" class="btn btn-theme" @click="saveCategory" :disabled="loading">
+            <button type="button" class="btn btn-theme" @click="saveMedicament" :disabled="loading">
               {{ loading ? 'Enregistrement...' : 'Enregistrer' }}
             </button>
           </div>
@@ -152,95 +160,97 @@
 <script>
 import axios from "axios";
 import Swal from "sweetalert2";
-
+import { nextTick } from "vue";
 export default {
   data() {
     return {
       baseUrl: "http://127.0.0.1:8000/",
-      categories: [],
+      medicamentList: [],
       loading: false,
+      categoryId: null,
       isEditing: false,
       editingId: null,
-      categoryForm: { name: "" },
+      medicamentForm: {
+        name: "",
+        quentity: "",
+        price: "",
+        category_id: null,
+      },
     };
   },
+
   mounted() {
-    this.getCategories();
+    this.categoryId = this.$route.query.categoryId;
+    console.log("Catégorie ID :", this.categoryId);
+    this.getMedicament();
   },
+
   methods: {
-    async getCategories() {
+    async getMedicament() {
       this.loading = true;
       try {
         const token = localStorage.getItem("current_token");
-        const res = await axios.get(`${this.baseUrl}api/categories`, {
-          headers: { Authorization: `Bearer ${token}` },
+        const res = await axios.get(`${this.baseUrl}api/medicaments?categoryId=${this.categoryId}`, {
+        headers: { Authorization: `Bearer ${token}` },
         });
-        this.categories = res.data.data.categories || [];
+        this.medicamentList = res.data.data.medicaments || [];
       } catch (e) {
-        Swal.fire("Erreur", "Impossible de charger les catégories.", "error");
+        Swal.fire("Erreur", "Impossible de charger les produits.", "error");
       } finally {
         this.loading = false;
       }
     },
 
-   getCategoryImage(name) {
-  const lowerName = name.toLowerCase();
-
-  const images = {
-    comprime: new URL('../../assets/img/compri.png', import.meta.url).href,
-    sirup: new URL('../../assets/img/syrup.png', import.meta.url).href,
-    injection: new URL('../../assets/img/injection.png', import.meta.url).href,
-    collyr: new URL('../../assets/img/collyr.png', import.meta.url).href,
-    pommade: new URL('../../assets/img/pommade.png', import.meta.url).href,
-    materiel: new URL('../../assets/img/materiel.png', import.meta.url).href,
-    default: new URL('../../assets/img/ste.png', import.meta.url).href,
-  };
-
-  if (lowerName.includes('comprimé')) return images.comprime;
-  if (lowerName.includes('sirup')) return images.sirup;
-  if (lowerName.includes('injection')) return images.injection;
-  if (lowerName.includes('pommade')) return images.pommade;
-  if (lowerName.includes('collyr')) return images.collyr;
-  if (lowerName.includes('materiel')) return images.materiel;
-
-  return images.default;
-},
-
-
     openCreateModal() {
       this.resetForm();
       this.isEditing = false;
       this.editingId = null;
-    },
-
-    editCategory(category) {
-      this.isEditing = true;
-      this.editingId = category.id;
-      this.categoryForm.name = category.name;
-      const modal = new bootstrap.Modal(document.getElementById("createCategoryModal"));
+      const modal = new bootstrap.Modal(document.getElementById("createMedicamentModal"));
       modal.show();
     },
 
-    async saveCategory() {
+    editMedicament(medicament) {
+      this.isEditing = true;
+      this.editingId = medicament.id;
+      this.medicamentForm = {
+        name: medicament.name,
+        quentity: medicament.quentity,
+        price: medicament.price,
+        category_id: medicament.category_id,
+      };
+      const modal = new bootstrap.Modal(document.getElementById("createMedicamentModal"));
+      modal.show();
+    },
+
+    async saveMedicament() {
       this.loading = true;
       const token = localStorage.getItem("current_token");
+
       try {
+
+        this.medicamentForm.category_id = this.categoryId;
+        console.log(this.medicamentForm);
         if (this.isEditing) {
-          await axios.put(
-            `${this.baseUrl}api/categories/${this.editingId}`,
-            { name: this.categoryForm.name },
-            { headers: { Authorization: `Bearer ${token}`, Accept: "application/json" } }
+
+            console.log("Modification du médicament ID :", this.editingId);
+            await axios.put(
+            `${this.baseUrl}api/medicaments/${this.editingId}`,
+            this.medicamentForm,
+            {
+              headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
+            }
           );
-          Swal.fire("Succès", "Catégorie modifiée avec succès.", "success");
+          Swal.fire("Succès", "Produit modifié avec succès.", "success");
         } else {
-          await axios.post(`${this.baseUrl}api/categories`, { name: this.categoryForm.name }, {
-            headers: { Authorization: `Bearer ${token}` },
+
+          await axios.post(`${this.baseUrl}api/medicaments`, this.medicamentForm, {
+            headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
           });
-          Swal.fire("Succès", "Catégorie créée avec succès.", "success");
+          Swal.fire("Succès", "Produit créé avec succès.", "success");
         }
 
-        this.getCategories();
-        bootstrap.Modal.getInstance(document.getElementById("createCategoryModal")).hide();
+        this.getMedicament();
+        bootstrap.Modal.getInstance(document.getElementById("createMedicamentModal")).hide();
       } catch (e) {
         Swal.fire("Erreur", e.response?.data?.message || "Erreur d'enregistrement.", "error");
       } finally {
@@ -248,7 +258,7 @@ export default {
       }
     },
 
-    async deleteCategory(id) {
+    async deleteMedicament(id) {
       const confirm = await Swal.fire({
         title: "Êtes-vous sûr ?",
         text: "Cette action est irréversible !",
@@ -261,23 +271,30 @@ export default {
       if (confirm.isConfirmed) {
         try {
           const token = localStorage.getItem("current_token");
-          await axios.delete(`${this.baseUrl}api/categories/${id}`, {
+          await axios.delete(`${this.baseUrl}api/medicaments/${id}`, {
             headers: { Authorization: `Bearer ${token}` },
           });
-          Swal.fire("Supprimé !", "Catégorie supprimée avec succès.", "success");
-          this.getCategories();
+          Swal.fire("Supprimé !", "Produit supprimé avec succès.", "success");
+          this.getMedicament();
         } catch {
-          Swal.fire("Erreur", "Impossible de supprimer la catégorie.", "error");
+          Swal.fire("Erreur", "Impossible de supprimer le produit.", "error");
         }
       }
     },
 
     resetForm() {
-      this.categoryForm.name = "";
+      this.medicamentForm = {
+        name: "",
+        quentity: "",
+        price: "",
+        category_id: this.categoryId,
+      };
     },
   },
 };
 </script>
+
+
 
 <style scoped>
 .hover-card {

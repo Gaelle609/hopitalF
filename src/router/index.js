@@ -12,7 +12,7 @@ import indexPersonnel from '../pages/personnel/index.vue';
 import Service from '../pages/service/Service.vue';
 import Product from '../pages/pharmacie/Product.vue';
 import Category from '../pages/pharmacie/Category.vue';
-
+import ViewProduct from '../pages/pharmacie/ViewProduct.vue';
 
 
 
@@ -72,6 +72,11 @@ const routes = [
         path: 'product/',
         name: 'Product',
         component: Product,
+      },
+      {
+        path: 'details/',
+        name: 'ViewProduct',
+        component: ViewProduct,
       },
 
     ],
