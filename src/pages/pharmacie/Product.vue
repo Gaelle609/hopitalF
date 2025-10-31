@@ -43,7 +43,7 @@
             <p class="h6">Liste des Produits</p>
           </div>
           <div class="card-body px-2">
-            <table class="table" id="dataTable">
+            <table class="table" id="">
               <thead>
                 <tr>
                   <th>Code</th>
@@ -62,7 +62,7 @@
                     <p class="small mb-0">{{ medicament.name }}</p>
                   </td>
                   <td>
-                    <p class="small mb-0">{{ medicament.quentity }}</p>
+                    <p class="small mb-0">{{ medicament.quantity }}</p>
                   </td>
                   <td>
                     <p class="small mb-0">{{ medicament.price }} FCFA</p>
@@ -106,61 +106,105 @@
     </div>
 
 
-    <!-- ✅ Modal -->
-    <div 
-      class="modal fade"
-      id="createMedicamentModal"
-      tabindex="-1"
-      aria-labelledby="createMedicamentModalLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow">
-          <!-- Header -->
-          <div class="text-center pt-4">
-            <img src="../../assets/img/wecare.png" alt="Logo" width="100" class="mb-3" />
-            <h5 class="fw-bold text-theme-1">
-              {{ isEditing ? 'Modifier le produit' : 'Créer un produit' }}
-            </h5>
-          </div>
+   <!-- ✅ Modal -->
+<div 
+  class="modal fade"
+  id="createMedicamentModal"
+  tabindex="-1"
+  aria-labelledby="createMedicamentModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content border-0 shadow-lg">
+      <!-- Header -->
+      <div class="text-center pt-4">
+        <img src="../../assets/img/wecare.png" alt="Logo" width="100" class="mb-3" />
+        <h5 class="fw-bold text-theme-1">
+          {{ isEditing ? 'Modifier le médicament' : 'Créer un médicament' }}
+        </h5>
+      </div>
 
-          <!-- Body -->
-          <div class="px-4 py-3">
-            <form @submit.prevent="saveMedicament">
-              <div class="mb-3">
-                <label class="form-label">Nom du produit <span class="text-danger">*</span></label>
-                <input type="text" class="form-control" v-model="medicamentForm.name" required/>
-              </div>
-              <div class="mb-3">
-                <label class="form-label">Quantité du produit <span class="text-danger">*</span></label>
-                <input type="text" class="form-control" v-model="medicamentForm.quentity" required/>
-              </div>
-              <div class="mb-3">
-                <label class="form-label">Prix unitaire <span class="text-danger">*</span></label>
-                <input type="text" class="form-control" v-model="medicamentForm.price" required/>
-              </div>
-            </form>
-          </div>
+      <!-- Body -->
+      <div class="px-4 py-3">
+        <form @submit.prevent="saveMedicament">
+          <div class="row">
+            <!-- Nom -->
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Nom du médicament <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" v-model="medicamentForm.name" required />
+            </div>
 
-          <!-- Footer -->
-          <div class="px-4 pb-4 text-end">
-            <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">
-              Fermer
-            </button>
-            <button type="button" class="btn btn-theme" @click="saveMedicament" :disabled="loading">
-              {{ loading ? 'Enregistrement...' : 'Enregistrer' }}
-            </button>
+            <!-- Quantité -->
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Quantité <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" v-model="medicamentForm.quantity" required />
+            </div>
+
+            <!-- Prix -->
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Prix unitaire (FCFA)</label>
+              <input type="number" step="0.01" class="form-control" v-model="medicamentForm.price" />
+            </div>
+
+            <!-- Dose -->
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Dose</label>
+              <input type="text" class="form-control" v-model="medicamentForm.dose" placeholder="Ex : 500mg" />
+            </div>
+
+            <!-- Fabricant -->
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Fabricant</label>
+              <input type="text" class="form-control" v-model="medicamentForm.manufacturer" />
+            </div>
+
+            <!-- Date d’expiration -->
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Date d’expiration</label>
+              <input type="date" class="form-control" v-model="medicamentForm.expiration_date" />
+            </div>
+
+           
+
+            <!-- Description -->
+            <div class="col-md-12 mb-3">
+              <label class="form-label">Description</label>
+              <textarea 
+                class="form-control" 
+                rows="3" 
+                v-model="medicamentForm.description" 
+                placeholder="Ajoutez une description ou une notice du médicament">
+              </textarea>
+            </div>
           </div>
-        </div>
+        </form>
+      </div>
+
+      <!-- Footer -->
+      <div class="px-4 pb-4 text-end">
+        <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">
+          Fermer
+        </button>
+        <button 
+          type="button" 
+          class="btn btn-theme" 
+          @click="saveMedicament" 
+          :disabled="loading"
+        >
+          {{ loading ? 'Enregistrement...' : 'Enregistrer' }}
+        </button>
       </div>
     </div>
+  </div>
+</div>
+
   </div>
 </template>
 
 <script>
 import axios from "axios";
 import Swal from "sweetalert2";
-import { nextTick } from "vue";
+
 export default {
   data() {
     return {
@@ -170,10 +214,16 @@ export default {
       categoryId: null,
       isEditing: false,
       editingId: null,
+
       medicamentForm: {
         name: "",
-        quentity: "",
+        quantity: "",
         price: "",
+        dose: "",
+        description: "",
+        manufacturer: "",
+        expiration_date: "",
+        statut: "active",
         category_id: null,
       },
     };
@@ -181,6 +231,12 @@ export default {
 
   mounted() {
     this.categoryId = this.$route.query.categoryId;
+    if (this.categoryId) {
+      localStorage.setItem("categoryId", this.categoryId);
+    } else {
+      this.categoryId = localStorage.getItem("categoryId");
+    }
+
     console.log("Catégorie ID :", this.categoryId);
     this.getMedicament();
   },
@@ -190,9 +246,10 @@ export default {
       this.loading = true;
       try {
         const token = localStorage.getItem("current_token");
-        const res = await axios.get(`${this.baseUrl}api/medicaments?categoryId=${this.categoryId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await axios.get(
+          `${this.baseUrl}api/medicaments?categoryId=${this.categoryId}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
         this.medicamentList = res.data.data.medicaments || [];
       } catch (e) {
         Swal.fire("Erreur", "Impossible de charger les produits.", "error");
@@ -205,54 +262,74 @@ export default {
       this.resetForm();
       this.isEditing = false;
       this.editingId = null;
-      const modal = new bootstrap.Modal(document.getElementById("createMedicamentModal"));
+      const modal = new bootstrap.Modal(
+        document.getElementById("createMedicamentModal")
+      );
       modal.show();
     },
 
     editMedicament(medicament) {
-      this.isEditing = true;
-      this.editingId = medicament.id;
-      this.medicamentForm = {
-        name: medicament.name,
-        quentity: medicament.quentity,
-        price: medicament.price,
-        category_id: medicament.category_id,
-      };
-      const modal = new bootstrap.Modal(document.getElementById("createMedicamentModal"));
-      modal.show();
-    },
+  this.isEditing = true;
+  this.editingId = medicament.id;
+
+  this.medicamentForm.slug = medicament.slug || "";
+  this.medicamentForm.name = medicament.name || "";
+  this.medicamentForm.quantity = medicament.quantity || "";
+  this.medicamentForm.price = medicament.price || "";
+  this.medicamentForm.dose = medicament.dose || "";
+  this.medicamentForm.description = medicament.description || "";
+  this.medicamentForm.manufacturer = medicament.manufacturer || "";
+  this.medicamentForm.expiration_date = medicament.expiration_date || "";
+  this.medicamentForm.statut = medicament.statut || "active";
+  this.medicamentForm.category_id = medicament.category_id || this.categoryId;
+
+  const modal = new bootstrap.Modal(
+    document.getElementById("createMedicamentModal")
+  );
+  modal.show();
+},
+
 
     async saveMedicament() {
       this.loading = true;
       const token = localStorage.getItem("current_token");
 
       try {
-
         this.medicamentForm.category_id = this.categoryId;
-        console.log(this.medicamentForm);
-        if (this.isEditing) {
 
-            console.log("Modification du médicament ID :", this.editingId);
-            await axios.put(
+        if (this.isEditing) {
+          console.log("Modification du médicament ID :", this.editingId);
+          await axios.put(
             `${this.baseUrl}api/medicaments/${this.editingId}`,
             this.medicamentForm,
             {
-              headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
+              headers: {
+                Authorization: `Bearer ${token}`,
+                Accept: "application/json",
+              },
             }
           );
-          Swal.fire("Succès", "Produit modifié avec succès.", "success");
+          Swal.fire("Succès", "Médicament modifié avec succès.", "success");
         } else {
-
           await axios.post(`${this.baseUrl}api/medicaments`, this.medicamentForm, {
-            headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+            },
           });
-          Swal.fire("Succès", "Produit créé avec succès.", "success");
+          Swal.fire("Succès", "Médicament créé avec succès.", "success");
         }
 
         this.getMedicament();
-        bootstrap.Modal.getInstance(document.getElementById("createMedicamentModal")).hide();
+        bootstrap.Modal.getInstance(
+          document.getElementById("createMedicamentModal")
+        ).hide();
       } catch (e) {
-        Swal.fire("Erreur", e.response?.data?.message || "Erreur d'enregistrement.", "error");
+        Swal.fire(
+          "Erreur",
+          e.response?.data?.message || "Erreur d'enregistrement.",
+          "error"
+        );
       } finally {
         this.loading = false;
       }
@@ -274,10 +351,10 @@ export default {
           await axios.delete(`${this.baseUrl}api/medicaments/${id}`, {
             headers: { Authorization: `Bearer ${token}` },
           });
-          Swal.fire("Supprimé !", "Produit supprimé avec succès.", "success");
+          Swal.fire("Supprimé !", "Médicament supprimé avec succès.", "success");
           this.getMedicament();
         } catch {
-          Swal.fire("Erreur", "Impossible de supprimer le produit.", "error");
+          Swal.fire("Erreur", "Impossible de supprimer le médicament.", "error");
         }
       }
     },
@@ -285,14 +362,20 @@ export default {
     resetForm() {
       this.medicamentForm = {
         name: "",
-        quentity: "",
+        quantity: "",
         price: "",
+        dose: "",
+        description: "",
+        manufacturer: "",
+        expiration_date: "",
+        statut: "active",
         category_id: this.categoryId,
       };
     },
   },
 };
 </script>
+
 
 
 
