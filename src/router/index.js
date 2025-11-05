@@ -13,8 +13,8 @@ import Service from '../pages/service/Service.vue';
 import Product from '../pages/pharmacie/Product.vue';
 import Category from '../pages/pharmacie/Category.vue';
 import ViewProduct from '../pages/pharmacie/ViewProduct.vue';
-
-
+import PayMedoc from '../pages/pharmacie/PayMedicament.vue';
+import PaidMedoc from '../pages/caisse/UnprintedPayments.vue';
 
 const routes = [
  
@@ -78,6 +78,16 @@ const routes = [
         name: 'ViewProduct',
         component: ViewProduct,
       },
+      {
+        path: 'paymed/',
+        name: 'PayMedoc',
+        component: PayMedoc,
+      },
+      {
+        path: "/paiements/non-imprimes",
+        name: "PaidMedoc",
+        component: PaidMedoc,
+      }
 
     ],
   },
