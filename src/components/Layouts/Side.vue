@@ -73,10 +73,10 @@
         
           </li>
           <li class="nav-item">
-            <a href="clinic-blogs.html" class="nav-link">
+            <router-link :to="{ name: 'Labo' }" class="nav-link">
               <i class="menu-icon bi bi-pass"></i>
-              <span class="menu-name">Laboratoire</span></a
-            >
+              <span class="menu-name">Laboratoire</span>
+            </router-link>
           </li>
           <li class="nav-item">
             <router-link :to="{ name: 'Caisse' }" class="nav-link">

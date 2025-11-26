@@ -15,6 +15,12 @@
         </div>
 
         <div class="col-md text-end">
+          <button class="btn btn-theme" @click="$router.push({ name: 'PaidMedoc' })">
+            <i class="bi bi-plus-lg me-1"></i>  <i class="bi bi-printer"></i>Imprimer
+          </button>
+        </div>
+
+        <div class="col-md text-end">
           <button class="btn btn-theme" @click="$router.push({ name: 'PayMedoc' })">
             <i class="bi bi-plus-lg me-1"></i> Nouveau Paiement
           </button>
@@ -73,7 +79,7 @@
               </div>
               <div class="col">
                 <p class="h4 mb-0">{{ recettemed }}</p>
-                <router-link :to="{ name: 'ListPay' }">Voir</router-link>
+                <router-link :to="{ name: 'ListPayMed' }">Voir</router-link>
                 <p class="text-secondary small">
                   Caisse des médicaments
                   <span class="text-success">

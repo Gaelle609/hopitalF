@@ -9,8 +9,8 @@
           <h4 id="log"><b>Connexion</b></h4>
         </div>
         <div class="card-body">
-          <input type="text" v-model="email" :class="{'input-error': error_email}" class="form-control mb-3" placeholder="E-mail">
-          <span v-if="error_email" class="text-danger err">{{ error_email.toLowerCase() }}</span>
+          <input type="text" v-model="matricule" :class="{'input-error': error_matricule}" class="form-control mb-3" placeholder="Matricule">
+          <span v-if="error_matricule" class="text-danger err">{{ error_matricule.toLowerCase() }}</span>
 
           <input type="password" v-model="password" :class="{'input-error': error_password}" class="form-control mb-3" placeholder="Mot de passe">
           <span v-if="error_password" class="text-danger err">{{ error_password.toLowerCase() }}</span>
@@ -34,14 +34,14 @@ export default {
   name: "LoginForm",
   data() {
     return {
-      email: "",
+      matricule: "",
       password: "",
       rawErrors: {}, // pour stocker les erreurs du backend
     };
   },
   computed: {
-    error_email() {
-      return this.rawErrors.email ? this.rawErrors.email[0] : "";
+    error_matricule() {
+      return this.rawErrors.matricule ? this.rawErrors.matricule[0] : "";
     },
     error_password() {
       return this.rawErrors.password ? this.rawErrors.password[0] : "";
@@ -52,7 +52,7 @@ export default {
       this.rawErrors = {}; // Réinitialiser les erreurs
       try {
         const res = await axios.post("http://127.0.0.1:8000/api/auth/login", {
-          email: this.email,
+          matricule: this.matricule,
           password: this.password
         });
 
@@ -74,12 +74,12 @@ export default {
           if (data.errors) {
             this.rawErrors = data.errors; // validation
           } else if (data.message) {
-            this.rawErrors = { email: [data.message] }; // message global
+            this.rawErrors = { matricule: [data.message] }; // message global
           } else {
-            this.rawErrors = { email: ["erreur inconnue"] };
+            this.rawErrors = { matricule: ["erreur inconnue"] };
           }
         } else {
-          this.rawErrors = { email: ["impossible de se connecter au serveur"] };
+          this.rawErrors = { matricule: ["impossible de se connecter au serveur"] };
         }
       }
     }

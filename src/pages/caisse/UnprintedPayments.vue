@@ -49,7 +49,7 @@
                 <td class="small">{{ new Date(p.created_at).toLocaleString('fr-FR') }}</td>
                 <td class="text-center">
                   <button class="btn btn-sm btn-success" @click="imprimer(p)">
-                    🖨️ Imprimer
+                     <i class="bi bi-printer"></i> Imprimer
                   </button>
                 </td>
               </tr>
@@ -92,11 +92,14 @@
           <div>
             <span class="fw-bold">Patient:</span> {{ selectedPaiement.patient?.nom }}
           </div>
-          <div>
-            <span class="fw-bold">Mode:</span> Espèces
+            <div>
+              <span class="fw-bold">Mode:</span> Espèces 
           </div>
           <div>
-            <span class="fw-bold">Reste:</span> 0 FCFA
+           <span class="fw-bold" :class="{ 'text-danger': selectedPaiement.reste > 0 }">Reste:</span> 
+            <span :class="{ 'text-danger fw-bold': selectedPaiement.reste > 0 }">
+              {{ selectedPaiement.reste || 0 }} FCFA
+            </span>
           </div>
         </div>
 
@@ -125,6 +128,14 @@
               <tr>
                 <td colspan="4" class="text-end fw-bold text-muted">TOTAL GÉNÉRAL</td>
                 <td class="text-end fw-bold fs-6">{{ selectedPaiement.total }} FCFA</td>
+              </tr>
+              <tr v-if="selectedPaiement.verser">
+                <td colspan="4" class="text-end text-muted">Montant versé</td>
+                <td class="text-end">{{ selectedPaiement.verser }} FCFA</td>
+              </tr>
+              <tr v-if="selectedPaiement.reste > 0">
+                <td colspan="4" class="text-end fw-bold text-danger">Reste à payer</td>
+                <td class="text-end fw-bold text-danger">{{ selectedPaiement.reste }} FCFA</td>
               </tr>
             </tfoot>
           </table>
@@ -198,7 +209,7 @@ export default {
         margin: [0, 0, 0, 0],
         filename: `recu_${paiement.code}.pdf`,
         image: { type: "jpeg", quality: 0.98 },
-        html2canvas: { scale: 2 },
+        html2canvas: { scale: 1 },
         jsPDF: { unit: "mm", format: "a5", orientation: "landscape" },
       };
 

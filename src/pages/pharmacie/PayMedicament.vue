@@ -33,13 +33,13 @@
           </span>
         </div>
         <div class="col-md-6">
-        <label class="form-label fw-semibold">Patient</label>
-        <input type="text" class="form-control" v-model="patientQuery" @input="searchPatient" placeholder="Commencez à taper le nom du patient" autocomplete="off"/>
-        <ul v-if="patientSuggestions.length" class="list-group position-absolute w-100 z-3">
+          <label class="form-label fw-semibold">Patient</label>
+          <input type="text" class="form-control" v-model="patientQuery" @input="searchPatient" placeholder="Commencez à taper le nom du patient" autocomplete="off"/>
+          <ul v-if="patientSuggestions.length" class="list-group position-absolute w-100 z-3">
             <li v-for="patient in patientSuggestions" :key="patient.id" class="list-group-item list-group-item-action pointer" @click="selectPatient(patient)">
-            {{ patient.first_name }} {{ patient.last_name }}
+              {{ patient.first_name }} {{ patient.last_name }}
             </li>
-        </ul>
+          </ul>
         </div>
         <br>
         <div id="inputField">
@@ -54,15 +54,15 @@
 
             <div class="row g-3">
              
-                <div class="col-md-4 position-relative">
-                    <label class="form-label fw-semibold">Médicament</label>
-                    <input type="text" class="form-control" v-model="field.query" @input="searchMedicament(index)" placeholder="Tapez le nom du médicament" autocomplete="off" required/>
-                    <ul v-if="field.suggestions?.length" class="list-group position-absolute w-100 z-3">
-                    <li v-for="med in field.suggestions" :key="med.id" class="list-group-item list-group-item-action pointer" @click="selectMedicament(index, med)">
-                        {{ med.name }}
-                    </li>
-                    </ul>
-                </div>
+              <div class="col-md-4 position-relative">
+                <label class="form-label fw-semibold">Médicament</label>
+                <input type="text" class="form-control" v-model="field.query" @input="searchMedicament(index)" placeholder="Tapez le nom du médicament" autocomplete="off" required/>
+                <ul v-if="field.suggestions?.length" class="list-group position-absolute w-100 z-3">
+                  <li v-for="med in field.suggestions" :key="med.id" class="list-group-item list-group-item-action pointer" @click="selectMedicament(index, med)">
+                    {{ med.name }}
+                  </li>
+                </ul>
+              </div>
 
               <div class="col-md-4">
                 <label class="form-label fw-semibold">Quantité</label>
@@ -74,20 +74,22 @@
                 <input type="number" class="form-control" v-model.number="field.pu" readonly placeholder="0"/>
               </div>
 
-             
             </div>
           </div>
         </div>
 
         <div class="row mt-3">
-           
-          <div class="col-md-6">
+          <div class="col-md-4">
             <label class="form-label fw-semibold">Montant total (FCFA)</label>
             <input type="number" class="form-control" :value="totalGlobal" readonly/>
           </div>
-          <div class="col-md-6">
-            <label class="form-label fw-semibold">Montant versé total (FCFA)</label>
-            <input type="number" class="form-control" :value="totalGlobal" readonly/>
+          <div class="col-md-4">
+            <label class="form-label fw-semibold">Montant versé (FCFA)</label>
+            <input type="number" class="form-control" v-model.number="montantVerse" @input="calculateResteGlobal" min="0" :max="totalGlobal" required/>
+          </div>
+          <div class="col-md-4" v-if="resteGlobal > 0">
+            <label class="form-label fw-semibold text-danger">Reste à payer (FCFA)</label>
+            <input type="number" class="form-control border-danger text-danger fw-bold" :value="resteGlobal" readonly/>
           </div>
         </div>
 
@@ -118,15 +120,22 @@ export default {
       personnelName: "",
       paymentDone: false,
       formattedDate: "",
-      fields: [{ medicament_id: "", quantity: 1, pu: 0, total: 0, verser: 0, reste: 0 }],
+      fields: [{ medicament_id: "", quantity: 1, pu: 0, total: 0, query: "", suggestions: [] }],
       payment: { code: "", patient_id: null, id_per: null },
+      montantVerse: 0,
+      resteGlobal: 0
     };
   },
   computed: {
     totalGlobal() {
       return this.fields.reduce((sum, f) => sum + (f.total || 0), 0);
     },
-   
+  },
+  watch: {
+    totalGlobal(newVal) {
+      this.montantVerse = newVal;
+      this.calculateResteGlobal();
+    }
   },
   mounted() {
     this.loadPersonnel();
@@ -134,68 +143,75 @@ export default {
     this.loadMedicaments();
   },
   methods: {
-
-
     async searchMedicament(index) {
-    const field = this.fields[index];
-    if (!field.query || field.query.length < 2) {
+      const field = this.fields[index];
+      if (!field.query || field.query.length < 2) {
+        field.suggestions = [];
+        return;
+      }
+      try {
+        const token = localStorage.getItem("current_token");
+        const response = await axios.get(`http://127.0.0.1:8000/api/searchmed?query=${field.query}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        field.suggestions = response.data.data.medicaments || [];
+      } catch (error) {
+        console.error(error);
+      }
+    },
+
+    selectMedicament(index, med) {
+      const field = this.fields[index];
+      field.query = med.name;
+      field.medicament_id = med.id;
+      field.pu = parseFloat(med.price);
+      field.quantity = 1;
+      field.total = field.pu * field.quantity;
       field.suggestions = [];
-      return;
-    }
-    try {
-      const token = localStorage.getItem("current_token");
-      const response = await axios.get(`http://127.0.0.1:8000/api/searchmed?query=${field.query}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      field.suggestions = response.data.data.medicaments || [];
-    } catch (error) {
-      console.error(error);
-    }
-  },
+      this.updateTotalGlobal();
+    },
 
-  selectMedicament(index, med) {
-    const field = this.fields[index];
-    field.query = med.name;
-    field.medicament_id = med.id;
-    field.pu = parseFloat(med.price);
-    field.quantity = 1;
-    field.total = field.pu * field.quantity;
-    field.verser = field.total;
-    field.reste = 0;
-    field.suggestions = [];
-    this.updateTotalGlobal();
-  },
+    updateTotal(index) {
+      const field = this.fields[index];
+      field.total = field.pu * field.quantity;
+      this.updateTotalGlobal();
+    },
 
-  updateTotal(index) {
-    const field = this.fields[index];
-    field.total = field.pu * field.quantity;
-    field.reste = Math.max(0, field.total - (field.verser || 0));
-    this.updateTotalGlobal();
-  },
+    updateTotalGlobal() {
+      // Le computed totalGlobal se met à jour automatiquement
+      this.calculateResteGlobal();
+    },
 
-  updateTotalGlobal() {
-    this.totalGlobal = this.fields.reduce((sum, f) => sum + (f.total || 0), 0);
-  },
+    calculateResteGlobal() {
+      this.resteGlobal = Math.max(0, this.totalGlobal - (this.montantVerse || 0));
+    },
 
     addField() {
-      this.fields.push({ medicament_id: "", quantity: 1, pu: 0, total: 0, verser: 0, reste: 0 });
+      this.fields.push({ medicament_id: "", quantity: 1, pu: 0, total: 0, query: "", suggestions: [] });
     },
+    
     removeField(index) {
       this.fields.splice(index, 1);
+      this.updateTotalGlobal();
     },
+
     async loadPatient() {
       const token = localStorage.getItem("current_token");
       const id = this.$route.params.patientId;
-      const response = await axios.get(`http://127.0.0.1:8000/api/patients/${id}`, { headers: { Authorization: `Bearer ${token}` } });
+      const response = await axios.get(`http://127.0.0.1:8000/api/patients/${id}`, 
+      { headers: { Authorization: `Bearer ${token}` } });
       this.patient = response.data.data.patient;
       this.patientName = `${this.patient.first_name} ${this.patient.last_name}`;
       this.payment.patient_id = this.patient.id;
     },
+
     async loadMedicaments() {
       const token = localStorage.getItem("current_token");
-      const response = await axios.get("http://127.0.0.1:8000/api/medicaments", { headers: { Authorization: `Bearer ${token}` } });
+      const response = await axios.get("http://127.0.0.1:8000/api/medicaments", 
+      { headers: { Authorization: `Bearer ${token}` } });
       this.medicaments = response.data.data.medicaments;
     },
+
     async loadPersonnel() {
       const user = JSON.parse(localStorage.getItem("current_user"));
       if (!user?.id) return;
@@ -205,114 +221,94 @@ export default {
       this.personnelName = `${this.personnel.first_name} ${this.personnel.last_name}`;
       this.payment.id_per = this.personnel.id;
     },
-    updatePrice(index) {
-      const field = this.fields[index];
-      const med = this.medicaments.find((m) => m.id === field.medicament_id);
-      if (med) {
-        field.pu = parseFloat(med.price);
-        this.updateTotal(index);
-        field.verser = field.total;
-        field.reste = 0;
+
+    async submitPayment() {
+      try {
+        const token = localStorage.getItem("current_token");
+        const user = JSON.parse(localStorage.getItem("current_user"));
+        const payload = {
+          medoc: this.fields.map(f => ({
+            medicament_id: f.medicament_id,
+            quantity: f.quantity,
+            pu: f.pu,
+            total: f.total,
+            reste: this.resteGlobal // Ajout du reste pour chaque médicament
+          })),
+          patient_id: this.payment.patient_id,
+          id_per: user.id,
+          verser: this.montantVerse,
+          reste: this.resteGlobal // Ajout du reste global
+        };
+
+        const response = await axios.post(
+          "http://127.0.0.1:8000/api/caissemeds",
+          payload,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+
+        if (response.data.success) {
+          const payments = response.data.data.payment;
+          if (payments.length > 0) this.payment = payments[0];
+          this.paymentDone = true;
+          this.formattedDate = new Date().toLocaleString("fr-FR");
+
+          this.$swal.fire({
+            icon: "success",
+            title: "Paiement enregistré !",
+            text: this.resteGlobal > 0 
+              ? `Paiement enregistré avec un reste de ${this.resteGlobal} FCFA.`
+              : "Le paiement a été enregistré avec succès.",
+            timer: 2000,
+            showConfirmButton: false
+          });
+
+          setTimeout(() => {
+            this.$router.push("/paiements/non-imprimes");
+          }, 2000);
+        } else {
+          this.$swal.fire({
+            icon: "error",
+            title: "Erreur",
+            text: response.data.message || "Impossible d'enregistrer le paiement."
+          });
+        }
+      } catch (error) {
+        console.error(error);
+        this.$swal.fire({
+          icon: "error",
+          title: "Erreur",
+          text: "Impossible d'enregistrer le paiement. La quantité est insuffisante."
+        });
       }
     },
-    updateTotal(index) {
-      const field = this.fields[index];
-      field.total = field.pu * field.quantity;
-      field.reste = Math.max(0, field.total - (field.verser || 0));
-    },
-    calculateReste(index) {
-      const field = this.fields[index];
-      field.reste = Math.max(0, field.total - (field.verser || 0));
-    },
-    getMedicamentName(id) {
-      const med = this.medicaments.find((m) => m.id === id);
-      return med ? med.name : "";
-    },
-   async submitPayment() {
-  try {
-    // debugger;
-    const token = localStorage.getItem("current_token");
-    const user = JSON.parse(localStorage.getItem("current_user"));
-    const payload = {
-      medoc: this.fields.map(f => ({
-        medicament_id: f.medicament_id,
-        quantity: f.quantity,
-        pu: f.pu,
-        total: f.total
-      })),
-      patient_id: this.payment.patient_id,
-      id_per: user.id,
-      verser: this.totalGlobal
-    };
-
-    const response = await axios.post(
-      "http://127.0.0.1:8000/api/caissemeds",
-      payload,
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-
-    if (response.data.success) {
-      const payments = response.data.data.payment;
-      if (payments.length > 0) this.payment = payments[0];
-      this.paymentDone = true;
-      this.formattedDate = new Date().toLocaleString("fr-FR");
-
-      this.$swal.fire({
-        icon: "success",
-        title: "Paiement enregistré !",
-        text: "Le paiement a été enregistré avec succès.",
-        timer: 2000,
-        showConfirmButton: false
-      });
-
-      setTimeout(() => {
-    this.$router.push("/paiements/non-imprimes");
-  }, 2000);
-    } else {
-      this.$swal.fire({
-        icon: "error",
-        title: "Erreur",
-        text: response.data.message || "Impossible d'enregistrer le paiement."
-      });
-    }
-  } catch (error) {
-    console.error(error);
-    this.$swal.fire({
-      icon: "error",
-      title: "Erreur",
-      text: "Impossible d'enregistrer le paiement. Veuillez réessayer."
-    });
-  }
-},
 
     async searchPatient() {
-    if (this.patientQuery.length < 2) {
+      if (this.patientQuery.length < 2) {
+        this.patientSuggestions = [];
+        return;
+      }
+
+      try {
+        const token = localStorage.getItem("current_token");
+        const response = await axios.get(
+          `http://127.0.0.1:8000/api/search?query=${this.patientQuery}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        this.patientSuggestions = response.data.data.patients || [];
+      } catch (error) {
+        console.error(error);
+      }
+    },
+
+    selectPatient(patient) {
+      this.patientQuery = `${patient.first_name} ${patient.last_name}`;
+      this.patientIdSelected = patient.id;
       this.patientSuggestions = [];
-      return;
-    }
-
-    try {
-      const token = localStorage.getItem("current_token");
-      const response = await axios.get(
-        `http://127.0.0.1:8000/api/search?query=${this.patientQuery}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      this.patientSuggestions = response.data.data.patients || [];
-    } catch (error) {
-      console.error(error);
-    }
-  },
-
-  selectPatient(patient) {
-    this.patientQuery = `${patient.first_name} ${patient.last_name}`;
-    this.patientIdSelected = patient.id;
-    this.patientSuggestions = [];
-    this.payment.patient_id = patient.id; 
-  },
+      this.payment.patient_id = patient.id; 
+    },
   }
 };
 </script>
-
 
 <style scoped>
 #img {

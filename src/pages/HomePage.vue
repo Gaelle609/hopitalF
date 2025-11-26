@@ -33,8 +33,8 @@
             </div>
 
             <div class="col-md-6 mb-3">
-              <label class="form-label">Adresse</label>
-              <input type="text" class="form-control" v-model="patientForm.address" required>
+              <label class="form-label">Cartier</label>
+              <input type="text" class="form-control" v-model="patientForm.quater" required>
             </div>
 
             <div class="col-md-6 mb-3">
@@ -66,8 +66,8 @@
             </div>
 
             <div class="col-md-6 mb-3">
-              <label class="form-label">Lieu de naissance</label>
-              <input type="text" class="form-control" v-model="patientForm.place_of_birth" required>
+              <label class="form-label">Profession</label>
+              <input type="text" class="form-control" v-model="patientForm.profession" required>
             </div>
 
             <div class="col-md-6 mb-3">
@@ -252,15 +252,28 @@
 
                                                 </td>
                                                 
-                                                <td>
+                                               <td>
                                                   <div class="dropdown d-inline-block">
-                                                    <a class="btn btn-link no-caret" data-bs-toggle="dropdown">
+                                                    <a class="btn btn-link no-caret cp" data-bs-toggle="dropdown">
                                                       <i class="bi bi-three-dots"></i>
                                                     </a>
                                                     <ul class="dropdown-menu dropdown-menu-end">
-                                                      <li><a class="dropdown-item" href="javascript:void(0) cp">Edité</a></li>
-                                                      <li><a class="dropdown-item" href="javascript:void(0) cp">Détailé</a></li>
-                                                      <li><a class="dropdown-item theme-red" href="javascript:void(0) cp">Suprimé</a></li>
+                                                      <li>
+                                                        <a class="dropdown-item cp" @click="viewPatient(patient)">
+                                                          <i class="bi bi-eye me-2"></i>Voir Détails
+                                                        </a>
+                                                      </li>
+                                                      <li>
+                                                        <a class="dropdown-item cp" @click="editPatient(patient)">
+                                                          <i class="bi bi-pencil me-2"></i>Modifier
+                                                        </a>
+                                                      </li>
+                                                      <li><hr class="dropdown-divider"></li>
+                                                      <li>
+                                                        <a class="dropdown-item theme-red cp" @click="deletePatient(patient.id)">
+                                                          <i class="bi bi-trash me-2"></i>Supprimer
+                                                        </a>
+                                                      </li>
                                                     </ul>
                                                   </div>
                                                 </td>
@@ -287,19 +300,23 @@ export default {
       greeting: "",
       timeOfDay: "",
       userAvatar: "../../assets/img/avatar.jpg",
-      patients: [], // liste des patients
+      patients: [], 
+      baseUrl: "http://127.0.0.1:8000/",
       patientForm: {
         first_name: "",
         last_name: "",
         phone: "",
         gender: "",
-        address: "",
+        quater: "",
         emergency_contact: "",
         matrimonial_situation: "",
-        place_of_birth: "",
+        profession: "",
         age: null
       },
-      loading: false
+      selectedPatient: null,
+      loading: false,
+      isEditing: false,
+      editingId: null
     };
   },
   computed: {
@@ -326,7 +343,7 @@ export default {
         this.userName = user.first_name + (user.last_name ? " " + user.last_name : "");
         if (user.picture) {
           const baseUrl = "http://127.0.0.1:8000/";
-          this.userAvatar = baseUrl + user.picture; // met l'image du backend
+          this.userAvatar = baseUrl + user.picture; 
         }
       }
 
@@ -342,80 +359,114 @@ export default {
         this.timeOfDay = "soirée";
       }
     },
-
+      
+    async openCreateModal() {
+    this.isEditing = false;
+    this.editingId = null;
+    this.resetForm();
+  },
     async submitPatientForm() {
       this.loading = true;
+      const token = localStorage.getItem("current_token");
       try {
-        
-    const token = localStorage.getItem("current_token");
-
-    const response = await axios.post(`http://127.0.0.1:8000/api/patients`, 
-      this.patientForm, 
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${token}`
+        let response;
+        if(this.isEditing) {
+          response = await axios.put(`${this.baseUrl}api/patients/${this.editingId}`, this.patientForm, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+        } else {
+          response = await axios.post(`${this.baseUrl}api/patients`, this.patientForm, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
         }
-      }
-    );
 
-        if (response.data.success) {
+        if(response.data.success){
           this.$swal.fire({
-        icon: 'success',
-        title: 'Patient créé avec succès !',
-        showConfirmButton: false,
-        timer: 2000
-      });
-          this.getPatients(); 
-          this.patientForm = {
-            first_name: "",
-            last_name: "",
-            phone: "",
-            gender: "",
-            address: "",
-            emergency_contact: "",
-            matrimonial_situation: "",
-            place_of_birth: "",
-            age: null
-          };
-          // fermer le modal
+            icon: 'success',
+            title: this.isEditing ? 'Patient modifié avec succès !' : 'Patient créé avec succès !',
+            showConfirmButton: false,
+            timer: 2000
+          });
+          this.getPatients();
+          this.resetForm();
           const modal = document.getElementById("createPatientModal");
-          const modalInstance = bootstrap.Modal.getInstance(modal);
-          modalInstance.hide();
-         setTimeout(() => {
-            window.location.reload();
-          }, 2000);
+          bootstrap.Modal.getInstance(modal).hide();
+           window.location.reload();
         }
-      } catch (error) {
+      } catch(error) {
         console.error(error);
-        this.$swal.fire({
-      icon: 'error',
-      title: 'Erreur',
-      text: 'Erreur lors de la création du patient.'
-    });
+        this.$swal.fire({ icon: 'error', title: 'Erreur', text: 'Erreur lors de la création ou modification du patient.' });
       } finally {
         this.loading = false;
       }
-      //  window.location.reload();
     },
 
-    // récupérer les patients
+    editPatient(patient) {
+      this.isEditing = true;
+      this.editingId = patient.id;
+      this.patientForm = {
+        first_name: patient.first_name,
+        last_name: patient.last_name,
+        phone: patient.phone,
+        gender: patient.gender,
+        quater: patient.quater,
+        emergency_contact: patient.emergency_contact,
+        matrimonial_situation: patient.matrimonial_situation,
+        profession: patient.profession,
+        age: patient.age
+      };
+      const modal = new bootstrap.Modal(document.getElementById("createPatientModal"));
+      modal.show();
+    },
+
+    async deletePatient(id) {
+      const result = await this.$swal.fire({
+        title: 'Êtes-vous sûr?',
+        text: "Cette action est irréversible!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Oui, supprimer!',
+        cancelButtonText: 'Annuler'
+      });
+      if(result.isConfirmed){
+        try{
+          const token = localStorage.getItem("current_token");
+          await axios.delete(`${this.baseUrl}api/patients/${id}`, { headers: { Authorization: `Bearer ${token}` }});
+          this.$swal.fire({ icon:'success', title:'Supprimé!', showConfirmButton:false, timer:2000 });
+          this.getPatients();
+        } catch(error){
+          console.error(error);
+          this.$swal.fire({ icon:'error', title:'Erreur', text:'Erreur lors de la suppression du patient.' });
+        }
+      }
+    },
+
+    resetForm() {
+      this.patientForm = {
+        first_name: "",
+        last_name: "",
+        phone: "",
+        gender: "",
+        quater: "",
+        emergency_contact: "",
+        matrimonial_situation: "",
+        profession: "",
+        age: null
+      };
+      this.isEditing = false;
+      this.editingId = null;
+    },
+
     async getPatients() {
       try {
-    
-    const token = localStorage.getItem("current_token");
-
-    const response = await axios.get(`http://127.0.0.1:8000/api/patients`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
+        const token = localStorage.getItem("current_token");
+        const response = await axios.get(`${this.baseUrl}api/patients`, { headers: { Authorization: `Bearer ${token}` } });
         this.patients = response.data.data || [];
-      } catch (error) {
+      } catch(error) {
         console.error(error);
-        alert("Erreur lors du chargement des patients.");
+        this.$swal.fire({ icon: 'error', title: 'Erreur', text: 'Erreur lors du chargement des patients.' });
       }
     }
   }

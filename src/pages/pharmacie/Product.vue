@@ -247,7 +247,7 @@ export default {
       try {
         const token = localStorage.getItem("current_token");
         const res = await axios.get(
-          `${this.baseUrl}api/medicaments?categoryId=${this.categoryId}`,
+          `${this.baseUrl}api/by-category?categoryId=${this.categoryId}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         this.medicamentList = res.data.data.medicaments || [];
@@ -324,6 +324,7 @@ export default {
         bootstrap.Modal.getInstance(
           document.getElementById("createMedicamentModal")
         ).hide();
+        window.location.reload();
       } catch (e) {
         Swal.fire(
           "Erreur",

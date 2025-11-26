@@ -7,6 +7,7 @@ import Profile from '../pages/Profile.vue';
 import PayService from '../pages/patient/PayService.vue';
 import Caisse from '../pages/caisse/Caisse.vue';
 import ListPay from '../pages/caisse/ListPay.vue';
+import ListPayMed from '../pages/caisse/ListPayMed.vue';
 import Parameter from '../pages/patient/Parameter.vue';
 import indexPersonnel from '../pages/personnel/index.vue';
 import Service from '../pages/service/Service.vue';
@@ -15,6 +16,7 @@ import Category from '../pages/pharmacie/Category.vue';
 import ViewProduct from '../pages/pharmacie/ViewProduct.vue';
 import PayMedoc from '../pages/pharmacie/PayMedicament.vue';
 import PaidMedoc from '../pages/caisse/UnprintedPayments.vue';
+import Labo from '../pages/laboratoire/Exam.vue';
 
 const routes = [
  
@@ -47,6 +49,11 @@ const routes = [
         path: 'listpay/',
         name: 'ListPay',
         component: ListPay,
+      },
+      {
+        path: 'listpayMed/',
+        name: 'ListPayMed',
+        component: ListPayMed,
       },
       {
         path: 'param/',
@@ -87,6 +94,11 @@ const routes = [
         path: "/paiements/non-imprimes",
         name: "PaidMedoc",
         component: PaidMedoc,
+      },
+      {
+        path: "/exam",
+        name: "Labo",
+        component: Labo,
       }
 
     ],

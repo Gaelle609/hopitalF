@@ -28,11 +28,6 @@
                 </div>
 
                 <div class="col-md-6 mb-3">
-                  <label class="form-label">Email</label>
-                  <input type="email" class="form-control" v-model="personnelForm.email" required>
-                </div>
-
-                <div class="col-md-6 mb-3">
                   <label class="form-label">Téléphone</label>
                   <input type="text" class="form-control" v-model="personnelForm.phone_number" required>
                 </div>
@@ -54,7 +49,7 @@
                   <input type="text" class="form-control" v-model="personnelForm.adress" required>
                 </div>
 
-                <div class="mb-3">
+                <div class="mb-3 col-md-6">
                   <label class="form-label">Fonction</label>
                   <select class="form-control" v-model="personnelForm.role_id" required>
                     <option value="" disabled>Choisir une fonction</option>
@@ -65,10 +60,10 @@
 
                 </div>
 
-                <!-- <div class="col-md-6 mb-3">
-                  <label class="form-label">Mot de passe</label>
-                  <input type="password" class="form-control" v-model="personnelForm.password" :required="!isEditing">
-                </div> -->
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Age</label>
+                  <input type="interger" class="form-control" v-model="personnelForm.age" :required="!isEditing">
+                </div>
 
                 <div class="col-md-6 mb-3">
                   <label class="form-label">Photo de profil</label>
@@ -92,6 +87,10 @@
     </div>
 
     <!-- Modal Détails Personnel -->
+     <div v-if="generatedPassword" class="alert alert-info mt-3">
+  <strong>Mot de passe :</strong> {{ generatedPassword }}
+</div>
+
     <div class="modal fade" id="viewPersonnelModal" tabindex="-1" aria-labelledby="viewPersonnelModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content border-0 shadow">
@@ -292,7 +291,7 @@
                     <p class="mb-0 fw-medium">{{ personnel.first_name }} {{ personnel.last_name }}</p>
                   </td>
                   <td>
-                    <p class="small mb-0">{{ personnel.email }}</p>
+                    <p class="small mb-0">{{ personnel.matricule }}</p>
                   </td>
                   <td>
                     <p class="small mb-0">{{ personnel.phone_number }}</p>
@@ -338,6 +337,8 @@
       </div>
     </div>
   </div>
+ 
+
 </template>
 
 <script>
@@ -349,6 +350,7 @@ export default {
       userName: "",
       greeting: "",
       timeOfDay: "",
+      generatedPassword:"",
       userAvatar: "../../assets/img/avatar.jpg",
       baseUrl: "http://127.0.0.1:8000/",
       personnelList: [],
@@ -356,10 +358,10 @@ export default {
       personnelForm: {
         first_name: "",
         last_name: "",
-        email: "",
         role_id: "",
         phone_number: "",
         gender: "",
+        age: "",
         adress: "",
         password: "",
         picture: null
@@ -410,79 +412,74 @@ export default {
     async openCreateModal() {
     this.isEditing = false;
     this.editingId = null;
-    await this.loadRole(); // charger les rôles avant d'ouvrir le modal
+    await this.loadRole();
     this.resetForm();
   },
 
 
-    async submitPersonnelForm() {
-      this.loading = true;
-      try {
-        const token = localStorage.getItem("current_token");
-        const formData = new FormData();
+   async submitPersonnelForm() {
+  this.loading = true;
+  try {
+    const token = localStorage.getItem("current_token");
+    const formData = new FormData();
 
-        Object.keys(this.personnelForm).forEach(key => {
-          if (this.personnelForm[key] !== null && this.personnelForm[key] !== "") {
-            formData.append(key, this.personnelForm[key]);
-          }
-        });
-
-        let response;
-        if (this.isEditing) {
-          // Utiliser la route POST avec l'ID pour la mise à jour
-          response = await axios.post(
-            `${this.baseUrl}api/users/${this.editingId}`,
-            formData,
-            {
-              headers: {
-                "Content-Type": "multipart/form-data",
-                Authorization: `Bearer ${token}`
-              }
-            }
-          );
-        } else {
-          response = await axios.post(
-            `${this.baseUrl}api/users`,
-            formData,
-            {
-              headers: {
-                "Content-Type": "multipart/form-data",
-                "Accept": "application/json",
-                Authorization: `Bearer ${token}`
-              }
-            }
-          );
-        }
-
-        this.$swal.fire({
-          icon: 'success',
-          title: this.isEditing ? 'Personnel modifié avec succès !' : 'Personnel créé avec succès !',
-          showConfirmButton: false,
-          timer: 2000
-        });
-
-        this.getPersonnel();
-        this.resetForm();
-        
-        const modal = document.getElementById("createPersonnelModal");
-        const modalInstance = bootstrap.Modal.getInstance(modal);
-        modalInstance.hide();
-
-        setTimeout(() => {
-          window.location.reload();
-        }, 2000);
-
-      } catch (error) {
-        console.error(error);
-        this.$swal.fire({
-          icon: 'error',
-          title: 'Erreur',
-          text: error.response?.data?.message || 'Erreur lors de l\'opération.'
-        });
-      } finally {
-        this.loading = false;
+    Object.keys(this.personnelForm).forEach(key => {
+      if (this.personnelForm[key] !== null && this.personnelForm[key] !== "") {
+        formData.append(key, this.personnelForm[key]);
       }
-    },
+    });
+
+    let response;
+    if (this.isEditing) {
+      response = await axios.post(
+        `${this.baseUrl}api/users/${this.editingId}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+    } else {
+      response = await axios.post(
+        `${this.baseUrl}api/register`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            "Accept": "application/json",
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      this.generatedPassword = response.data.data.password;
+    }
+
+    this.$swal.fire({
+      icon: 'success',
+      title: this.isEditing ? 'Personnel modifié avec succès !' : 'Personnel créé avec succès !',
+      showConfirmButton: false,
+      timer: 2000
+    });
+
+    this.getPersonnel();
+    this.resetForm();
+    
+
+  } catch (error) {
+    console.error(error);
+    this.$swal.fire({
+      icon: 'error',
+      title: 'Erreur',
+      text: error.response?.data?.message || 'Erreur lors de l\'opération.'
+    });
+  } finally {
+    this.loading = false;
+  }
+},
+
 
     async getPersonnel() {
       try {
@@ -516,9 +513,9 @@ export default {
       this.personnelForm = {
         first_name: personnel.first_name,
         last_name: personnel.last_name,
-        email: personnel.email,
         phone_number: personnel.phone_number,
         gender: personnel.gender,
+        age: personnel.age,
         adress: personnel.adress,
         password: "",
         picture: null
@@ -565,6 +562,7 @@ export default {
           });
 
           this.getPersonnel();
+          window.location.reload();
         } catch (error) {
           console.error(error);
           this.$swal.fire({
@@ -580,10 +578,10 @@ export default {
       this.personnelForm = {
         first_name: "",
         last_name: "",
-        email: "",
         role_id: "",
         phone_number: "",
         gender: "",
+        age: "",
         adress: "",
         password: "",
         picture: null
