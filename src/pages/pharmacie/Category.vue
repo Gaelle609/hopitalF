@@ -168,48 +168,34 @@ export default {
     this.getCategories();
   },
   methods: {
-    // async getCategories() {
-    //   this.loading = true;
-    //   try {
-    //     const token = localStorage.getItem("current_token");
-    //     const res = await axios.get(`${this.baseUrl}api/categories`, {
-    //       headers: { Authorization: `Bearer ${token}` },
-    //     });
-    //     this.categories = res.data.data.categories || [];
-    //   } catch (e) {
-    //     Swal.fire("Erreur", "Impossible de charger les catégories.", "error");
-    //   } finally {
-    //     this.loading = false;
-    //   }
-    // },
-
+  
     async getCategories() {
-  this.loading = true;
-  const token = localStorage.getItem("current_token");
+    this.loading = true;
+    const token = localStorage.getItem("current_token");
 
-  try {
-    const res = await axios.get(`${this.baseUrl}api/categories`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    try {
+      const res = await axios.get(`${this.baseUrl}api/categories`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-    const categories = res.data.data.categories;
+      const categories = res.data.data.categories;
 
-    // Ajouter les counts
-    for (let cat of categories) {
-      const resCount = await axios.get(
-        `${this.baseUrl}api/count?categoryId=${cat.id}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      cat.medicaments_count = resCount.data.data.count;
+      // Ajouter les counts
+      for (let cat of categories) {
+        const resCount = await axios.get(
+          `${this.baseUrl}api/count?categoryId=${cat.id}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        cat.medicaments_count = resCount.data.data.count;
+      }
+
+      this.categories = categories;
+    } catch (e) {
+      Swal.fire("Erreur", "Impossible de charger les catégories.", "error");
+    } finally {
+      this.loading = false;
     }
-
-    this.categories = categories;
-  } catch (e) {
-    Swal.fire("Erreur", "Impossible de charger les catégories.", "error");
-  } finally {
-    this.loading = false;
-  }
-},
+  },
 
 
    getCategoryImage(name) {

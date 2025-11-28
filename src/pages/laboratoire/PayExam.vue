@@ -3,7 +3,7 @@
     <div class="bg-theme-1-subtle rounded px-3 py-3">
       <div class="row gx-3 align-items-center">
         <div class="col-12 col-md mb-2 mb-sm-0">
-          <p class="h5">Paiement de médicaments</p>
+          <p class="h5">Paiement des examens</p>
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb mb-0">
               <li class="breadcrumb-item bi">
@@ -32,7 +32,7 @@
             title="Ajouter un champ"
             @click="addField"
           >
-            <i class="bi bi-plus-lg me-1"></i> Ajouter un médicament
+            <i class="bi bi-plus-lg me-1"></i> Ajouter un Examen
           </span>
         </div>
         <div class="col-md-6">
@@ -49,7 +49,7 @@
           <div v-for="(field, index) in fields" :key="index" class="border-0 rounded p-3 mb-3 bg-light-subtle position-relative">
 
             <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-1">
-              <h6 class="mb-0 text-theme-1 fw-bold">Médicament {{ index + 1 }}</h6>
+              <h6 class="mb-0 text-theme-1 fw-bold">Examen {{ index + 1 }}</h6>
               <button v-if="fields.length > 1" type="button" class="btn btn-sm btn-outline-danger" @click="removeField(index)"> 
                 <i class="bi bi-x-lg"></i>
               </button>
@@ -58,18 +58,13 @@
             <div class="row g-3">
              
               <div class="col-md-4 position-relative">
-                <label class="form-label fw-semibold">Médicament</label>
-                <input type="text" class="form-control" v-model="field.query" @input="searchMedicament(index)" placeholder="Tapez le nom du médicament" autocomplete="off" required/>
+                <label class="form-label fw-semibold">Examen</label>
+                <input type="text" class="form-control" v-model="field.query" @input="searchExam(index)" placeholder="Tapez le nom de l'examen" autocomplete="off" required/>
                 <ul v-if="field.suggestions?.length" class="list-group position-absolute w-100 z-3">
-                  <li v-for="med in field.suggestions" :key="med.id" class="list-group-item list-group-item-action pointer" @click="selectMedicament(index, med)">
-                    {{ med.name }}
+                  <li v-for="exam in field.suggestions" :key="exam.id" class="list-group-item list-group-item-action pointer" @click="selectExam(index, exam)">
+                    {{ exam.name }}
                   </li>
                 </ul>
-              </div>
-
-              <div class="col-md-4">
-                <label class="form-label fw-semibold">Quantité</label>
-                <input type="number" class="form-control" v-model.number="field.quantity" min="1" @input="updateTotal(index)" placeholder="Saisir la quantité" required/>
               </div>
 
               <div class="col-md-4">
@@ -118,12 +113,12 @@ export default {
       patientQuery: "",
       patientSuggestions: [],
       patientIdSelected: null,
-      medicaments: [],
+      examen: [],
       personnel: {},
       personnelName: "",
       paymentDone: false,
       formattedDate: "",
-      fields: [{ medicament_id: "", quantity: 1, pu: 0, total: 0, query: "", suggestions: [] }],
+      fields: [{ examen_id: "", pu: 0, total: 0, query: "", suggestions: [] }],
       payment: { code: "", patient_id: null, id_per: null },
       montantVerse: 0,
       resteGlobal: 0
@@ -143,10 +138,10 @@ export default {
   mounted() {
     this.loadPersonnel();
     this.loadPatient();
-    this.loadMedicaments();
+    this.loadExamen();
   },
   methods: {
-    async searchMedicament(index) {
+    async searchExam(index) {
       const field = this.fields[index];
       if (!field.query || field.query.length < 2) {
         field.suggestions = [];
@@ -157,18 +152,17 @@ export default {
         const response = await axios.get(`http://127.0.0.1:8000/api/searchmed?query=${field.query}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
-        field.suggestions = response.data.data.medicaments || [];
+        field.suggestions = response.data.data.examen || [];
       } catch (error) {
         console.error(error);
       }
     },
 
-    selectMedicament(index, med) {
+    selectExam(index, exam) {
       const field = this.fields[index];
-      field.query = med.name;
-      field.medicament_id = med.id;
-      field.pu = parseFloat(med.price);
-      field.quantity = 1;
+      field.query = exam.name;
+      field.examen_id = exam.id;
+      field.pu = parseFloat(exam.price);
       field.total = field.pu * field.quantity;
       field.suggestions = [];
       this.updateTotalGlobal();
@@ -190,7 +184,7 @@ export default {
     },
 
     addField() {
-      this.fields.push({ medicament_id: "", quantity: 1, pu: 0, total: 0, query: "", suggestions: [] });
+      this.fields.push({ examen_id: "", pu: 0, total: 0, query: "", suggestions: [] });
     },
     
     removeField(index) {
@@ -208,11 +202,11 @@ export default {
       this.payment.patient_id = this.patient.id;
     },
 
-    async loadMedicaments() {
+    async loadExamen() {
       const token = localStorage.getItem("current_token");
-      const response = await axios.get("http://127.0.0.1:8000/api/medicaments", 
+      const response = await axios.get("http://127.0.0.1:8000/api/examens", 
       { headers: { Authorization: `Bearer ${token}` } });
-      this.medicaments = response.data.data.medicaments;
+      this.examen = response.data.data.examen;
     },
 
     async loadPersonnel() {
@@ -230,9 +224,8 @@ export default {
         const token = localStorage.getItem("current_token");
         const user = JSON.parse(localStorage.getItem("current_user"));
         const payload = {
-          medoc: this.fields.map(f => ({
-            medicament_id: f.medicament_id,
-            quantity: f.quantity,
+          exam: this.fields.map(f => ({
+            examen_id: f.examen_id,
             pu: f.pu,
             total: f.total,
             reste: this.resteGlobal // Ajout du reste pour chaque médicament
@@ -244,7 +237,7 @@ export default {
         };
 
         const response = await axios.post(
-          "http://127.0.0.1:8000/api/caissemeds",
+          "http://127.0.0.1:8000/api/caisseExams",
           payload,
           { headers: { Authorization: `Bearer ${token}` } }
         );
@@ -287,7 +280,7 @@ export default {
 
     async searchPatient() {
       if (this.patientQuery.length < 2) {
-        this.patientSuggestions = []; 
+        this.patientSuggestions = [];
         return;
       }
 
@@ -322,76 +315,23 @@ export default {
 #btn:hover {
   box-shadow: 3px 3px 3px rgb(59, 105, 255);
 }
-/* #receipt {
-  width: 210mm;
-  min-height: 148mm;
-  background: #fff;
-  color: #000;
-  font-family: "Courier New", monospace;
-} */
-#logo {
-  width: 120px;
-  height: 120px;
-  object-fit: contain;
-  margin-right: -20px;
-}
-
-.pointer {
-  cursor: pointer;
-}
-
-#logo {
-  width: 120px;
-  height: 120px;
-  object-fit: contain;
-  margin-right: -20px;
-}
-
-/* .receipt-content {
-  font-size: 0.9rem;
-  margin-left: -30px;
-  margin-top: -30rem;
-  display: none;
-} */
-
 #receipt {
   width: 210mm;
   min-height: 148mm;
   background: #fff;
   color: #000;
-  font-family: 'Courier New', monospace;
+  font-family: "Courier New", monospace;
 }
-
-#receipt .table {
+#logo {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+  margin-right: -20px;
+}
+.receipt-content {
   font-size: 0.9rem;
-  color: #000;
 }
-
-#receipt .table th,
-#receipt .table td {
-  padding: 0.5rem;
-  border-color: #999;
-}
-
-.receipt-body p {
-  font-size: 0.95rem;
-  margin-bottom: 0.5rem;
-}
-
-@media print {
-  body * {
-    visibility: hidden;
-  }
-  #receipt,
-  #receipt * {
-    visibility: visible;
-  }
-  #receipt {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    display: block !important;
-  }
+.pointer {
+  cursor: pointer;
 }
 </style>

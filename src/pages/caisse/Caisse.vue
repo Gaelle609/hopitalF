@@ -21,9 +21,31 @@
         </div>
 
         <div class="col-md text-end">
-          <button class="btn btn-theme" @click="$router.push({ name: 'PayMedoc' })">
-            <i class="bi bi-plus-lg me-1"></i> Nouveau Paiement
-          </button>
+          <div class="dropdown">
+  <button
+    class="btn btn-theme dropdown-toggle"
+    type="button"
+    data-bs-toggle="dropdown"
+    aria-expanded="false"
+  >
+    <i class="bi bi-plus-lg me-1"></i> Nouveau Paiement
+  </button>
+
+  <ul class="dropdown-menu">
+    <li>
+      <a class="dropdown-item" @click="$router.push({ name: 'PayExam' })">
+        Paiement Examen
+      </a>
+    </li>
+
+    <li>
+      <a class="dropdown-item" @click="$router.push({ name: 'PayMedoc' })">
+        Paiement Médicament
+      </a>
+    </li>
+  </ul>
+</div>
+
         </div>
       </div>
     </div>
@@ -115,8 +137,16 @@
                         </div> 
                     </div> 
                     <div class="col"> 
-                        <p class="h4 mb-0">$ 645.00</p> 
-                        <p class="text-secondary small">Caisse Des Examens</p> 
+                         <p class="h4 mb-0">{{ recettexam }}</p>
+                <router-link :to="{ name: 'ListPayMed' }">Voir</router-link>
+                        <p class="text-secondary small">Caisse Des Examens
+
+                          <span class="text-success">
+                    {{ recettelexam }}
+                    <i class="bi bi-arrow-up"></i>
+                  </span>
+                        </p> 
+                        
                     </div> 
                 </div> 
                     <div class="progress height-dynamic mb-3" style="--h-dynamic: 5px">
@@ -145,10 +175,13 @@ export default {
     return {
       recette: 0,
       recettemed: 0,
+      recettexam: 0,
       recettel: "",
       recettelmed: "",
+      recettelexam: "",
       objectifSoins: 100000, 
       objectifMed: 100000, 
+      objectifExam: 100000, 
     };
   },
  computed: {
@@ -169,11 +202,21 @@ export default {
 
     return Math.min((montant / this.objectifMed) * 100, 100);
   },
+
+  progressExam() {
+    const montant =
+      typeof this.recettexam === "string"
+        ? parseFloat(this.recettexam.replace(/[^\d]/g, "")) || 0
+        : Number(this.recettexam) || 0;
+
+    return Math.min((montant / this.objectifExam) * 100, 100);
+  },
 },
 
   mounted() {
     this.loadRecette();
     this.loadRecetteMed();
+    this.loadRecetteExam();
   },
   methods: {
     async loadRecette() {
@@ -185,6 +228,17 @@ export default {
       const montant = response.data.data.recette;
       this.recette = `${Number(montant.montant).toLocaleString("fr-FR")} FCFA`;
       this.recettel = montant.montant_lettre;
+    },
+
+    async loadRecetteExam() {
+      const token = localStorage.getItem("current_token");
+      const response = await axios.get(`http://127.0.0.1:8000/api/caisseExams/recette`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const montant = response.data.data.recette;
+      this.recettexam = `${Number(montant.montant).toLocaleString("fr-FR")} FCFA`;
+      this.recettelexam = montant.montant_lettre;
     },
 
     async loadRecetteMed() {

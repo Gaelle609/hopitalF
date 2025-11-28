@@ -138,7 +138,7 @@
                   <router-link :to="{ name: 'HomePage' }">Accueil</router-link>
                 </li>
                 <li class="breadcrumb-item active bi" aria-current="page">
-                  examen
+                  Examen
                 </li>
               </ol>
             </nav>

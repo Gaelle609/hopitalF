@@ -15,6 +15,7 @@ import Product from '../pages/pharmacie/Product.vue';
 import Category from '../pages/pharmacie/Category.vue';
 import ViewProduct from '../pages/pharmacie/ViewProduct.vue';
 import PayMedoc from '../pages/pharmacie/PayMedicament.vue';
+import PayExam from '../pages/laboratoire/PayExam.vue';
 import PaidMedoc from '../pages/caisse/UnprintedPayments.vue';
 import Labo from '../pages/laboratoire/Exam.vue';
 
@@ -99,7 +100,12 @@ const routes = [
         path: "/exam",
         name: "Labo",
         component: Labo,
-      }
+      },
+      {
+        path: 'payexam/',
+        name: 'PayExam',
+        component: PayExam,
+      },
 
     ],
   },

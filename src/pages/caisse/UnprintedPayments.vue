@@ -10,7 +10,7 @@
                 <router-link :to="{ name: 'HomePage' }">Accueil</router-link>
               </li>
               <li class="breadcrumb-item bi">
-                <router-link :to="{ name: 'Category' }">Catégorie de produits</router-link>
+                <router-link :to="{ name: 'Caisse' }">Caisse</router-link>
               </li>
               <li class="breadcrumb-item bi">Paiements non imprimés</li>
             </ol>
@@ -64,11 +64,11 @@
     </div>
 
     <!-- TEMPLATE DU REÇU -->
-    <div id="receipt" class="card border-0 p-3" v-if="selectedPaiement" style="display: none;">
+    <div id="receipt" class="card border-0 p-3" v-if="selectedPaiement" style="display: block;">
       <!-- En-tête compact -->
       <div class="d-flex justify-content-between align-items-start mb-5">
-        <div class="d-flex align-items-center receipt-content">
-          <img id="logo" src="../../assets/img/logo2-removebg-preview.png" alt="Logo" />
+        <div class="d-flex align-items-start receipt-content mt-O">
+          <img style="margin-top: -2pc;" id="logo" src="../../assets/img/logo2-removebg-preview.png" alt="Logo" />
           <div class="ms-2">
             <p class="mb-0 fw-bold receipt-text">Centre de santé La Patience</p>
             <p class="mb-0 receipt-text-xs">Situé près de la mosquée au carrefour caisse</p>
@@ -197,38 +197,43 @@ export default {
     },
 
     async imprimer(paiement) {
-      this.selectedPaiement = paiement;
+  this.selectedPaiement = paiement;
 
-      // délai pour que le DOM du reçu se charge
-      await this.$nextTick();
+  // On attend que le DOM insère le reçu
+  await this.$nextTick();
 
-      const element = document.getElementById("receipt");
-      element.style.display = "block";
+  const element = document.getElementById("receipt");
 
-      const opt = {
-        margin: [0, 0, 0, 0],
-        filename: `recu_${paiement.code}.pdf`,
-        image: { type: "jpeg", quality: 0.98 },
-        html2canvas: { scale: 1 },
-        jsPDF: { unit: "mm", format: "a5", orientation: "landscape" },
-      };
+  // Afficher le reçu pour que les styles soient appliqués
+  element.style.display = "block";
 
-      await html2pdf().set(opt).from(element).save();
+  // Laisser le temps au navigateur d’appliquer le style
+  await new Promise(resolve => setTimeout(resolve, 300));
 
-      element.style.display = "none";
+  const opt = {
+    margin: [0, 0, 0, 0],
+    filename: `recu_${paiement.code}.pdf`,
+    image: { type: "jpeg", quality: 0.98 },
+    html2canvas: { scale: 2 }, // meilleure qualité
+    jsPDF: { unit: "mm", format: "a5", orientation: "landscape" },
+  };
+  await html2pdf().set(opt).from(element).save();
 
-      // ✅ Marquer comme imprimé
-      const token = localStorage.getItem("current_token");
-      await axios.post(
-        `http://127.0.0.1:8000/api/imprimer/${paiement.code}`,
-        {},
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+  element.style.display = "none";
 
-      // ✅ Supprimer localement
-      this.paiements = this.paiements.filter((p) => p.id !== paiement.id);
-      this.selectedPaiement = null;
-    },
+  const token = localStorage.getItem("current_token");
+  await axios.post(
+    `http://127.0.0.1:8000/api/imprimer/${paiement.code}`,
+    {},
+    { headers: { Authorization: `Bearer ${token}` } }
+  );
+
+  this.paiements = this.paiements.filter(p => p.id !== paiement.id);
+  this.selectedPaiement = null;
+
+  window.location.reload();
+}
+
   },
 };
 </script>

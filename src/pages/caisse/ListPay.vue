@@ -9,6 +9,9 @@
               <li class="breadcrumb-item bi">
                 <router-link :to="{ name: 'HomePage' }">Accueil</router-link>
               </li>
+              <li class="breadcrumb-item bi">
+                <router-link :to="{ name: 'Caisse' }">Caisse</router-link>
+              </li>
               <li class="breadcrumb-item active bi" aria-current="page">
                 Paiements Journalier
               </li>
