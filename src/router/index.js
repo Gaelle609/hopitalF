@@ -8,6 +8,7 @@ import PayService from '../pages/patient/PayService.vue';
 import Caisse from '../pages/caisse/Caisse.vue';
 import ListPay from '../pages/caisse/ListPay.vue';
 import ListPayMed from '../pages/caisse/ListPayMed.vue';
+import ListPayExam from '../pages/laboratoire/ListPayExam.vue';
 import Parameter from '../pages/patient/Parameter.vue';
 import indexPersonnel from '../pages/personnel/index.vue';
 import Service from '../pages/service/Service.vue';
@@ -105,6 +106,11 @@ const routes = [
         path: 'payexam/',
         name: 'PayExam',
         component: PayExam,
+      },
+      {
+        path: 'listpayExam/',
+        name: 'ListPayExam',
+        component: ListPayExam,
       },
 
     ],

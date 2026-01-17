@@ -28,28 +28,43 @@
               <tr>
                 <th class="px-3">Code</th>
                 <th>Patient</th>
-                <th>Médicaments</th>
+                <th>Prestations</th>
                 <th>Total</th>
                 <th>Date</th>
                 <th class="text-center">Action</th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="p in paiements" :key="p.id">
+              <tr v-for="p in paiements" :key="p.code">
                 <td class="px-3 fw-bold text-primary">{{ p.code }}</td>
-                <td>{{ p.patient.nom || '-' }}</td>
+                <td>{{ p.patient.nom }}</td>
+
                 <td>
                   <ul class="mb-0 ps-3">
-                    <li v-for="m in p.details" :key="m.medicament" class="small">
-                      {{ m.medicament }} <span class="text-muted">({{ m.total }} FCFA)</span>
+                    <li v-for="(d, i) in p.details" :key="i" class="small">
+                      {{ d.libelle }}
+                      <span class="text-muted">({{ d.total }} FCFA)</span>
                     </li>
                   </ul>
+                  <span
+                    class="badge mt-1"
+                    :class="p.type === 'EXAMEN' ? 'bg-warning' : 'bg-success'"
+                  >
+                    {{ p.type }}
+                  </span>
                 </td>
+
                 <td class="fw-bold">{{ p.total }} FCFA</td>
-                <td class="small">{{ new Date(p.created_at).toLocaleString('fr-FR') }}</td>
+                <td class="small">
+                  {{ new Date(p.created_at).toLocaleString("fr-FR") }}
+                </td>
+
                 <td class="text-center">
-                  <button class="btn btn-sm btn-success" @click="imprimer(p)">
-                     <i class="bi bi-printer"></i> Imprimer
+                  <button
+                    class="btn btn-sm btn-success"
+                    @click="imprimer(p)"
+                  >
+                    <i class="bi bi-printer"></i> Imprimer
                   </button>
                 </td>
               </tr>
@@ -109,19 +124,20 @@
             <thead class="table-light">
               <tr>
                 <th class="text-muted text-center" style="width: 5%;">N°</th>
-                <th class="text-muted" style="width: 50%;">Médicament</th>
-                <th class="text-muted text-center" style="width: 12%;">Qté</th>
+                <th class="text-muted" style="width: 50%;">Désignation</th>
+                <th class="text-muted text-center"  v-if="selectedPaiement.type === 'MEDICAMENT'" style="width: 12%;">Qté</th>
                 <th class="text-muted text-end" style="width: 16%;">P.U.</th>
                 <th class="text-muted text-end" style="width: 17%;">Total</th>
               </tr>
             </thead>
             <tbody class="receipt-table-body">
-              <tr v-for="(m, index) in selectedPaiement.details" :key="index">
-                <td class="text-center">{{ index + 1 }}</td>
-                <td class="receipt-med-name">{{ m.medicament }}</td>
-                <td class="text-center">{{ m.quantite || 1 }}</td>
-                <td class="text-end">{{ m.prix_unitaire || m.total }}</td>
-                <td class="text-end fw-bold">{{ m.total }}</td>
+             
+              <tr v-for="(d, i) in selectedPaiement.details" :key="i">
+                <td class="text-center">{{ i + 1 }}</td>
+                <td class="receipt-med-name">{{ d.libelle }}</td>
+                <td class="text-center" v-if="selectedPaiement.type === 'MEDICAMENT'">{{ d.quantite || 1 }}</td>
+                <td class="text-end">{{ d.prix_unitaire || m.total }}</td>
+                <td class="text-end fw-bold">{{ d.total }}</td>
               </tr>
             </tbody>
             <tfoot class="table-light">
@@ -175,10 +191,41 @@ export default {
   methods: {
     async loadPaiements() {
       const token = localStorage.getItem("current_token");
-      const res = await axios.get("http://127.0.0.1:8000/api/non-imprimes", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      this.paiements = res.data.data;
+
+      const [medRes, examRes] = await Promise.all([
+        axios.get("http://127.0.0.1:8000/api/non-imprimes", {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+        axios.get("http://127.0.0.1:8000/api/examnon-imprimes", {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+      ]);
+
+      const meds = medRes.data.data.map(p => ({
+        ...p,
+        type: "MEDICAMENT",
+        details: p.details.map(d => ({
+          libelle: d.medicament,
+          quantite: d.quantite || 1,
+          prix_unitaire: d.prix_unitaire || d.total,
+          total: d.total,
+        })),
+      }));
+
+      const exams = examRes.data.data.map(p => ({
+        ...p,
+        type: "EXAMEN",
+        details: p.details.map(d => ({
+          libelle: d.examen,
+          quantite: 1,
+          prix_unitaire: d.total,
+          total: d.total,
+        })),
+      }));
+
+      this.paiements = [...meds, ...exams].sort(
+        (a, b) => new Date(b.created_at) - new Date(a.created_at)
+      );
     },
 
     async loadPersonnel() {
@@ -222,11 +269,16 @@ export default {
   element.style.display = "none";
 
   const token = localStorage.getItem("current_token");
-  await axios.post(
-    `http://127.0.0.1:8000/api/imprimer/${paiement.code}`,
-    {},
-    { headers: { Authorization: `Bearer ${token}` } }
-  );
+  const url =
+      paiement.type === "EXAMEN"
+        ? `http://127.0.0.1:8000/api/imprimerexam/${paiement.code}`
+        : `http://127.0.0.1:8000/api/imprimer/${paiement.code}`;
+
+    await axios.post(
+      url,
+      {},
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
 
   this.paiements = this.paiements.filter(p => p.id !== paiement.id);
   this.selectedPaiement = null;

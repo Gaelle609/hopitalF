@@ -149,7 +149,7 @@ export default {
       }
       try {
         const token = localStorage.getItem("current_token");
-        const response = await axios.get(`http://127.0.0.1:8000/api/searchmed?query=${field.query}`, {
+        const response = await axios.get(`http://127.0.0.1:8000/api/searchexam?query=${field.query}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         field.suggestions = response.data.data.examen || [];
@@ -163,14 +163,14 @@ export default {
       field.query = exam.name;
       field.examen_id = exam.id;
       field.pu = parseFloat(exam.price);
-      field.total = field.pu * field.quantity;
+      field.total = field.pu;
       field.suggestions = [];
       this.updateTotalGlobal();
     },
 
     updateTotal(index) {
       const field = this.fields[index];
-      field.total = field.pu * field.quantity;
+      field.total = field.pu;
       this.updateTotalGlobal();
     },
 
@@ -237,7 +237,7 @@ export default {
         };
 
         const response = await axios.post(
-          "http://127.0.0.1:8000/api/caisseExams",
+          "http://127.0.0.1:8000/api/caissexams",
           payload,
           { headers: { Authorization: `Bearer ${token}` } }
         );
@@ -273,7 +273,7 @@ export default {
         this.$swal.fire({
           icon: "error",
           title: "Erreur",
-          text: "Impossible d'enregistrer le paiement. La quantité est insuffisante."
+          text: "Impossible d'enregistrer le paiement."
         });
       }
     },

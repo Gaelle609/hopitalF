@@ -138,7 +138,7 @@
                     </div> 
                     <div class="col"> 
                          <p class="h4 mb-0">{{ recettexam }}</p>
-                <router-link :to="{ name: 'ListPayMed' }">Voir</router-link>
+                <router-link :to="{ name: 'ListPayExam' }">Voir</router-link>
                         <p class="text-secondary small">Caisse Des Examens
 
                           <span class="text-success">
@@ -153,7 +153,7 @@
               <div
                 class="progress-bar bg-warning"
                 role="progressbar"
-                :style="{ width: `${progressSoins}%` }"
+                :style="{ width: `${progressExam}%` }"
               ></div>
             </div>
 
@@ -232,7 +232,7 @@ export default {
 
     async loadRecetteExam() {
       const token = localStorage.getItem("current_token");
-      const response = await axios.get(`http://127.0.0.1:8000/api/caisseExams/recette`, {
+      const response = await axios.get(`http://127.0.0.1:8000/api/recettexam`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
