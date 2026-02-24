@@ -50,7 +50,7 @@
                 >
               </div>
 
-              <div class="nav-item">
+              <div v-if="$hasRole('infirmier') || $hasRole('Admin') || $hasRole('medecin')" class="nav-item">
                 <router-link :to="{ name: 'Parameter' }" class="nav-link">
                   <i class="menu-icon bi bi-thermometer-half"></i>
                   <span class="menu-name"> Paramètre Patient</span>
@@ -58,13 +58,13 @@
               </div>
             </div>
           </li>
-          <li class="nav-item">
+          <li v-if="$hasRole('Admin') || $hasRole('medecin')" class="nav-item">
             <router-link :to="{ name: 'IndexPersonnel' }" class="nav-link"
               ><i class="menu-icon bi bi-person"></i>
               <span class="menu-name">Personnel</span></router-link
             >
           </li>
-          <li class="nav-item">
+          <li v-if="$hasRole('pharmacien')|| $hasRole('Admin')" class="nav-item">
 
             <router-link :to="{ name: 'Category' }" class="nav-link">
              <i class="menu-icon bi bi-bag-plus"></i>
@@ -72,20 +72,20 @@
             </router-link>
         
           </li>
-          <li class="nav-item">
+          <li v-if="$hasRole('laborantin')|| $hasRole('Admin')" class="nav-item">
             <router-link :to="{ name: 'Labo' }" class="nav-link">
               <i class="menu-icon bi bi-pass"></i>
               <span class="menu-name">Laboratoire</span>
             </router-link>
           </li>
-          <li class="nav-item">
+          <li v-if="$hasRole('Admin')" class="nav-item">
             <router-link :to="{ name: 'Caisse' }" class="nav-link">
               <i class="menu-icon bi bi-cash-stack"></i>
               <span class="menu-name">Caisse</span>
             </router-link>
           </li>
 
-          <li class="nav-item">
+          <li v-if="$hasRole('Admin')" class="nav-item">
             <router-link :to="{ name: 'Service' }" class="nav-link">
               <i data-feather="layers" class="me-0 me-md-1"></i>
               <span class="menu-name">Service</span>

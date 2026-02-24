@@ -334,6 +334,8 @@ export default {
   mounted() {
     this.setUserInfo();
     this.getPatients(); 
+    console.log("Test permission:", this.$can('view_user'));
+    console.log("Test role:", this.$hasRole('Admin'));
   },
   methods: {
     

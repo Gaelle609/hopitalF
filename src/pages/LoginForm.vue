@@ -65,6 +65,10 @@ export default {
           const roles = userData.user.roles || [];
           localStorage.setItem("current_role", JSON.stringify(roles));
           console.log('Roles stockés :', roles);
+
+          const permissions = userData.user.permissions || [];
+          localStorage.setItem("current_permissions", JSON.stringify(permissions));
+          console.log('Permissions stockées :', permissions);
           // Redirection
           location.href = "/home";
         }
