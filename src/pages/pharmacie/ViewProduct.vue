@@ -86,7 +86,7 @@
                   <span class="badge bg-info text-dark me-2">
                     <i class="bi bi-tag-fill me-1"></i>{{ category?.name || 'Non catégorisé' }}
                   </span>
-                  <span class="badge" :class="medicament?.quantity > 0 ? 'bg-success' : 'bg-danger'">
+                  <span class="badge" :class="medicament?.quantity > 0 ? 'bg-warning' : 'bg-danger'">
                     <i class="bi bi-box-seam me-1"></i>
                     {{ medicament?.quantity <= 0 ? 'Rupture de stock' : medicament?.quantity <= 6 ? 'Stock limité' : 'En stock' }}
                   </span>

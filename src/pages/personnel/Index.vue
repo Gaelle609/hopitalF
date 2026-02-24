@@ -91,106 +91,43 @@
   <strong>Mot de passe :</strong> {{ generatedPassword }}
 </div>
 
-    <div class="modal fade" id="viewPersonnelModal" tabindex="-1" aria-labelledby="viewPersonnelModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content border-0 shadow">
-          <!-- Header -->
-          <div class="border-0 text-center pt-4 adminuiux-content">
-            <h4 id="modal-title"><b class="text-theme-1">Détails du Personnel</b></h4>
-          </div>
-
-          <!-- Corps -->
-          <div class="card-body px-5" v-if="selectedPersonnel">
-            <div class="text-center mb-4">
-              <img :src="selectedPersonnel.picture ? baseUrl + selectedPersonnel.picture : '../../assets/img/avatar.jpg'" 
-                   alt="Avatar" class="rounded-circle" style="width: 120px; height: 120px; object-fit: cover;">
-            </div>
-            <div class="row">
-              <div class="col-md-6 mb-3">
-                <p class="text-secondary mb-1">Prénom</p>
-                <p class="fw-bold">{{ selectedPersonnel.first_name }}</p>
-              </div>
-              <div class="col-md-6 mb-3">
-                <p class="text-secondary mb-1">Nom</p>
-                <p class="fw-bold">{{ selectedPersonnel.last_name }}</p>
-              </div>
-              <div class="col-md-6 mb-3">
-                <p class="text-secondary mb-1">Email</p>
-                <p class="fw-bold">{{ selectedPersonnel.email }}</p>
-              </div>
-              <div class="col-md-6 mb-3">
-                <p class="text-secondary mb-1">Téléphone</p>
-                <p class="fw-bold">{{ selectedPersonnel.phone_number }}</p>
-              </div>
-              <div class="col-md-6 mb-3">
-                <p class="text-secondary mb-1">Sexe</p>
-                <p class="fw-bold">{{ selectedPersonnel.gender === 'Male' ? 'Masculin' : 'Féminin' }}</p>
-              </div>
-              <div class="col-md-6 mb-3">
-                <p class="text-secondary mb-1">Adresse</p>
-                <p class="fw-bold">{{ selectedPersonnel.adress }}</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Pied -->
-          <div class="border-0 pb-4 px-5 adminuiux-content">
-            <button type="button" class="btn btn-secondary w-100" data-bs-dismiss="modal">Fermer</button>
-          </div>
-        </div>
-      </div>
-    </div>
+    
 
     <!-- Main Content -->
-    <div class="row align-items-center">
-      <div class="col-12 col-lg-8 mb-4 mb-lg-5">
-        <div class="row align-items-center">
-          <div class="col-12 col-sm-auto mb-3 mb-sm-0">
-            <figure class="avatar avatar-120 coverimg rounded-circle">
-              <img :src="userAvatar" alt="">
-            </figure>
-          </div>
-          <div class="col-12 col-sm">
-            <h5 class="mb-0">{{ greeting }}</h5>
-            <h1 class="text-theme-1">{{ userName }}</h1>
-            <p class="text-secondary mb-0">
-              Bienvenue sur votre tableau de bord ! Passez une excellente {{ timeOfDay }}.
-            </p>
-          </div>
+    <div class="container-fluid mt-3">
+    <div class="bg-theme-1-subtle rounded px-3 py-3">
+      <div class="row gx-3 align-items-center">
+        <div class="col-12 col-md mb-2 mb-sm-0">
+          <p class="h5">Ajouter un personnel</p>
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+              <li class="breadcrumb-item bi">
+                <router-link :to="{ name: 'HomePage' }">Accueil</router-link>
+              </li>
+              <li class="breadcrumb-item active bi" aria-current="page">Personnel</li>
+            </ol>
+          </nav>
         </div>
-      </div>
-      <div class="col-100 col-lg-4 mb-4 text-end">
-        <button class="btn btn-theme" data-bs-toggle="modal" data-bs-target="#createPersonnelModal" @click="openCreateModal">
-          <i data-feather="plus" class="me-1"></i> Créer Personnel
-        </button>
+         <div class="col-md text-end">
+            <button
+              class="btn btn-theme"
+              data-bs-toggle="modal"
+              data-bs-target="#createPersonnelModal"
+              @click="openCreateModal"
+            >
+              <i data-feather="plus" class="me-1"></i> Créer un Personnel
+            </button>
+          </div>
       </div>
     </div>
+  </div>
+
+ 
+  <br>
 
     <!-- Statistics Cards -->
-    <div class="row">
-      <div class="col-12 col-lg-6 col-xxl-3 mb-4">
-        <div class="card adminuiux-card">
-          <div class="card-body">
-            <div class="row align-items-center">
-              <div class="col-auto">
-                <div class="avatar avatar-50 text-center rounded bg-success-subtle text-success-emphasis">
-                  <i class="bi bi-person-badge fs-4"></i>
-                </div>
-              </div>
-              <div class="col px-0">
-                <p class="h4 mb-0">{{ totalPersonnel }}</p>
-                <p class="text-secondary small">Personnel Total</p>
-              </div>
-              <div class="col-auto">
-                <div class="summarychart height-50 width-60">
-                  <canvas id="areachartgreen1"></canvas>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
+    <div class="row d-none">
+      
       <div class="col-12 col-lg-6 col-xxl-3 mb-4">
         <div class="card adminuiux-card">
           <div class="card-body">
@@ -201,7 +138,7 @@
                 </div>
               </div>
               <div class="col">
-                <p class="h4 mb-0">{{ totalPersonnel }}</p>
+                <p class="h4 mb-0">jdcksdj</p>
                 <p class="text-secondary small">Personnel Actif</p>
               </div>
               <div class="col-auto">
@@ -214,51 +151,8 @@
         </div>
       </div>
 
-      <div class="col-12 col-lg-6 col-xxl-3 mb-4">
-        <div class="card adminuiux-card">
-          <div class="card-body">
-            <div class="row gx-3 align-items-center">
-              <div class="col-auto">
-                <div class="avatar avatar-50 text-center rounded bg-warning-subtle text-warning-emphasis">
-                  <i class="bi bi-hospital fs-4"></i>
-                </div>
-              </div>
-              <div class="col">
-                <p class="h4 mb-0">5</p>
-                <p class="text-secondary small">Chambre</p>
-              </div>
-              <div class="col-auto">
-                <div class="summarychart height-50 width-60">
-                  <canvas id="areachartyellow1"></canvas>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-12 col-lg-6 col-xxl-3 mb-4">
-        <div class="card adminuiux-card">
-          <div class="card-body">
-            <div class="row gx-3 align-items-center">
-              <div class="col-auto">
-                <div class="avatar avatar-50 text-center rounded bg-danger-subtle text-danger-emphasis">
-                  <i class="bi bi-calendar-week fs-4"></i>
-                </div>
-              </div>
-              <div class="col">
-                <p class="h4 mb-0">2</p>
-                <p class="text-secondary small">Chambre Occupé</p>
-              </div>
-              <div class="col-auto">
-                <div class="summarychart height-50 width-60">
-                  <canvas id="areachartred1"></canvas>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      
+      
     </div>
 
     <!-- DataTable -->
@@ -311,9 +205,14 @@
                       </a>
                       <ul class="dropdown-menu dropdown-menu-end">
                         <li>
-                          <a class="dropdown-item cp" @click="viewPersonnel(personnel)">
+                           <router-link 
+                                :to="{ name: 'ViewPersonnel', query: { personnelId: personnel.id } }" 
+                                class="btn btn-theme btn-sm dropdown-item cp">
+                                <i class="bi bi-eye me-2"></i>Voir Détails
+                            </router-link>
+                          <!-- <a class="dropdown-item cp" @click="viewPersonnel(personnel)">
                             <i class="bi bi-eye me-2"></i>Voir Détails
-                          </a>
+                          </a> -->
                         </li>
                         <li>
                           <a class="dropdown-item cp" @click="editPersonnel(personnel)">
@@ -347,11 +246,8 @@ import axios from "axios";
 export default {
   data() {
     return {
-      userName: "",
-      greeting: "",
-      timeOfDay: "",
+      
       generatedPassword:"",
-      userAvatar: "../../assets/img/avatar.jpg",
       baseUrl: "http://127.0.0.1:8000/",
       personnelList: [],
       roles: [],
@@ -366,49 +262,17 @@ export default {
         password: "",
         picture: null
       },
-      selectedPersonnel: null,
       loading: false,
       isEditing: false,
       editingId: null
     };
   },
-  computed: {
-    totalPersonnel() {
-      return this.personnelList.length;
-    }
-  },
+  
   mounted() {
-    this.setUserInfo();
     this.getPersonnel();
-    //  this.loadRole();
   },
   methods: {
-    setUserInfo() {
-      const user = JSON.parse(localStorage.getItem("current_user"));
-      if (user) {
-        this.userName = user.first_name + (user.last_name ? " " + user.last_name : "");
-        if (user.picture) {
-          this.userAvatar = this.baseUrl + user.picture;
-        }
-      }
-
-      const hour = new Date().getHours();
-      if (hour < 12) {
-        this.greeting = "Bonjour !";
-        this.timeOfDay = "matinée";
-      } else if (hour < 18) {
-        this.greeting = "Bon après-midi !";
-        this.timeOfDay = "après-midi";
-      } else {
-        this.greeting = "Bonsoir !";
-        this.timeOfDay = "soirée";
-      }
-    },
-
-    handleFileUpload(event) {
-      this.personnelForm.picture = event.target.files[0];
-    },
-
+    
     async openCreateModal() {
     this.isEditing = false;
     this.editingId = null;
@@ -501,11 +365,7 @@ export default {
       }
     },
 
-    viewPersonnel(personnel) {
-      this.selectedPersonnel = personnel;
-      const modal = new bootstrap.Modal(document.getElementById('viewPersonnelModal'));
-      modal.show();
-    },
+   
 
     editPersonnel(personnel) {
       this.isEditing = true;

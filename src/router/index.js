@@ -10,7 +10,7 @@ import ListPay from '../pages/caisse/ListPay.vue';
 import ListPayMed from '../pages/caisse/ListPayMed.vue';
 import ListPayExam from '../pages/laboratoire/ListPayExam.vue';
 import Parameter from '../pages/patient/Parameter.vue';
-import indexPersonnel from '../pages/personnel/index.vue';
+import IndexPersonnel from '../pages/personnel/Index.vue';
 import Service from '../pages/service/Service.vue';
 import Product from '../pages/pharmacie/Product.vue';
 import Category from '../pages/pharmacie/Category.vue';
@@ -19,6 +19,7 @@ import PayMedoc from '../pages/pharmacie/PayMedicament.vue';
 import PayExam from '../pages/laboratoire/PayExam.vue';
 import PaidMedoc from '../pages/caisse/UnprintedPayments.vue';
 import Labo from '../pages/laboratoire/Exam.vue';
+import ViewPersonnel from '../pages/personnel/ViewPersonnel.vue';
 
 const routes = [
  
@@ -64,8 +65,13 @@ const routes = [
       },
       {
         path: 'personnel/',
-        name: 'indexPersonnel',
-        component: indexPersonnel,
+        name: 'IndexPersonnel',
+        component: IndexPersonnel,
+      },
+      {
+        path: 'persoDetail/',
+        name: 'ViewPersonnel',
+        component: ViewPersonnel,
       },
       {
         path: 'service/',

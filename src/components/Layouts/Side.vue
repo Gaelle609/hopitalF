@@ -59,7 +59,7 @@
             </div>
           </li>
           <li class="nav-item">
-            <router-link :to="{ name: 'indexPersonnel' }" class="nav-link"
+            <router-link :to="{ name: 'IndexPersonnel' }" class="nav-link"
               ><i class="menu-icon bi bi-person"></i>
               <span class="menu-name">Personnel</span></router-link
             >
