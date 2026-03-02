@@ -21,15 +21,15 @@
           </div>
           <div class="text-center collapse" id="usersidebarprofile">
             <figure class="avatar avatar-100 rounded-circle coverimg my-3">
-              <img src="../../assets/img/modern-ai-image/user-6.jpg" alt="" />
+              <img :src="user.picture || defaultAvatar" alt="Photo de profil" />
             </figure>
-            <p class="mb-1 h5">Dr. Alice</p>
-            <p class="small">The Clinical UI Kit</p>
+            <p class="mb-1 h5">{{ user.first_name }} {{ user.last_name }}</p>
+            <p class="small">{{ userRole }}</p>
           </div>
         </div>
         <ul class="nav flex-column menu-active-line my-3">
           <li class="nav-item">
-            <a href="clinic-dashboard.html" class="nav-link"
+            <a href="#" class="nav-link"
               ><i class="menu-icon" data-feather="grid"></i>
               <span class="menu-name">Tableau de Bord</span></a
             >
@@ -44,13 +44,20 @@
             >
             <div class="dropdown-menu">
               <div class="nav-item">
-                <a href="clinic-schedule.html" class="nav-link"
+                <router-link :to="{ name: 'ListPatient' }" class="nav-link"
                   ><i class="menu-icon" data-feather="table"></i>
-                  <span class="menu-name">Liste Patient </span></a
-                >
+                  <span class="menu-name">Liste Patient </span>
+                </router-link>
               </div>
 
-              <div v-if="$hasRole('infirmier') || $hasRole('Admin') || $hasRole('medecin')" class="nav-item">
+              <div
+                v-if="
+                  $hasRole('infirmier') ||
+                  $hasRole('Admin') ||
+                  $hasRole('medecin')
+                "
+                class="nav-item"
+              >
                 <router-link :to="{ name: 'Parameter' }" class="nav-link">
                   <i class="menu-icon bi bi-thermometer-half"></i>
                   <span class="menu-name"> Paramètre Patient</span>
@@ -64,15 +71,19 @@
               <span class="menu-name">Personnel</span></router-link
             >
           </li>
-          <li v-if="$hasRole('pharmacien')|| $hasRole('Admin')" class="nav-item">
-
+          <li
+            v-if="$hasRole('pharmacien') || $hasRole('Admin')"
+            class="nav-item"
+          >
             <router-link :to="{ name: 'Category' }" class="nav-link">
-             <i class="menu-icon bi bi-bag-plus"></i>
+              <i class="menu-icon bi bi-bag-plus"></i>
               <span class="menu-name">Pharmacie</span>
             </router-link>
-        
           </li>
-          <li v-if="$hasRole('laborantin')|| $hasRole('Admin')" class="nav-item">
+          <li
+            v-if="$hasRole('laborantin') || $hasRole('Admin')"
+            class="nav-item"
+          >
             <router-link :to="{ name: 'Labo' }" class="nav-link">
               <i class="menu-icon bi bi-pass"></i>
               <span class="menu-name">Laboratoire</span>
@@ -90,7 +101,7 @@
               <i data-feather="layers" class="me-0 me-md-1"></i>
               <span class="menu-name">Service</span>
             </router-link>
-          </li> 
+          </li>
 
           <li class="nav-item dropdown">
             <a
@@ -103,13 +114,13 @@
             >
             <div class="dropdown-menu">
               <div class="nav-item">
-                <a href="clinic-patients-documents.html" class="nav-link"
+                <a href="#" class="nav-link"
                   ><i class="menu-icon" data-feather="users"></i>
                   <span class="menu-name">Dossier Medicale</span></a
                 >
               </div>
               <div class="nav-item">
-                <a href="clinic-staff-documents.html" class="nav-link"
+                <a href="#" class="nav-link"
                   ><i class="menu-icon" data-feather="briefcase"></i>
                   <span class="menu-name"> Documents Staff</span></a
                 >
@@ -118,7 +129,7 @@
           </li>
 
           <li class="nav-item">
-            <a href="clinic-personalization.html" class="nav-link"
+            <a href="#" class="nav-link"
               ><i class="menu-icon bi bi-palette h6"></i>
               <span class="menu-name">Personaliser L'interface ❤️</span></a
             >
@@ -131,9 +142,7 @@
             <div class="card-body p-2">
               <div class="row gx-2">
                 <div class="col-12 d-flex justify-content-between">
-                  <a
-                    href="clinic-myprofile.html"
-                    class="btn btn-square btn-link"
+                  <a href="#" class="btn btn-square btn-link"
                     ><span class="position-relative"
                       ><i data-feather="user"></i>
                       <span
@@ -141,9 +150,7 @@
                         ><span class="visually-hidden">New alerts</span>
                       </span></span
                     ></a
-                  ><a
-                    href="clinic-schedule.html"
-                    class="btn btn-square btn-link"
+                  ><a href="#" class="btn btn-square btn-link"
                     ><span class="position-relative"
                       ><i data-feather="calendar"></i>
                       <span
@@ -151,11 +158,9 @@
                         ><span class="visually-hidden">New alerts</span>
                       </span></span
                     ></a
-                  ><a href="clinic-inbox.html" class="btn btn-square btn-link"
+                  ><a href="#" class="btn btn-square btn-link"
                     ><i data-feather="inbox"></i> </a
-                  ><a
-                    href="clinic-help-center.html"
-                    class="btn btn-square btn-link"
+                  ><a href="#" class="btn btn-square btn-link"
                     ><i data-feather="help-circle"></i
                   ></a>
                 </div>
@@ -165,7 +170,7 @@
         </div>
         <ul class="nav flex-column menu-active-line">
           <li class="nav-item">
-            <a href="clinic-settings.html" class="nav-link"
+            <a href="#" class="nav-link"
               ><i class="menu-icon" data-feather="settings"></i>
               <span class="menu-name">Settings</span></a
             >
@@ -185,6 +190,14 @@ export default {
       baseUrl: "http://127.0.0.1:8000/", // ton backend Laravel
     };
   },
+  computed: {
+    userRole() {
+      if (this.user.roles && this.user.roles.length > 0) {
+        return this.user.roles[0].name; // retourne "Admin"
+      }
+      return "Aucun rôle";
+    },
+  },
   mounted() {
     const storedUser = localStorage.getItem("current_user");
     if (storedUser) {
@@ -201,8 +214,9 @@ export default {
         first_name: "Utilisateur",
         last_name: "",
         picture: null,
+        roles: [],
       };
     }
-  }
+  },
 };
 </script>

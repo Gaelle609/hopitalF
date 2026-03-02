@@ -1,15 +1,15 @@
 <template>
   <div>
-    <!-- Modal Créer Personnel -->
+    <!-- Modal Créer Patient -->
     <div
       class="modal fade"
-      id="createPersonnelModal"
+      id="createPatientModal"
       tabindex="-1"
-      aria-labelledby="createPersonnelModalLabel"
       aria-hidden="true"
     >
       <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content border-0 shadow">
+          <!-- Header -->
           <div class="border-0 text-center pt-4 adminuiux-content">
             <div class="d-flex justify-content-center mb-3">
               <img
@@ -20,11 +20,12 @@
             </div>
             <h4>
               <b class="text-theme-1">{{
-                isEditing ? "Modifier le Personnel" : "Créer un Personnel"
+                isEditing ? "Modifier le Patient" : "Créer un Patient"
               }}</b>
             </h4>
           </div>
 
+          <!-- Corps -->
           <div class="card-body px-5">
             <div class="row">
               <div class="col-md-6 mb-3">
@@ -32,7 +33,7 @@
                 <input
                   type="text"
                   class="form-control"
-                  v-model="personnelForm.first_name"
+                  v-model="patientForm.first_name"
                   required
                 />
               </div>
@@ -41,7 +42,7 @@
                 <input
                   type="text"
                   class="form-control"
-                  v-model="personnelForm.last_name"
+                  v-model="patientForm.last_name"
                   required
                 />
               </div>
@@ -50,9 +51,32 @@
                 <input
                   type="text"
                   class="form-control"
-                  v-model="personnelForm.phone_number"
+                  v-model="patientForm.phone"
                   required
                 />
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Quartier</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  v-model="patientForm.quater"
+                  required
+                />
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Situation matrimoniale</label>
+                <select
+                  class="form-control"
+                  v-model="patientForm.matrimonial_situation"
+                  required
+                >
+                  <option value="" disabled>Choisir la situation</option>
+                  <option value="Célibataire">Célibataire</option>
+                  <option value="Marié(e)">Marié(e)</option>
+                  <option value="Divorcé(e)">Divorcé(e)</option>
+                  <option value="Veuf(ve)">Veuf(ve)</option>
+                </select>
               </div>
               <div class="col-md-6 mb-3">
                 <label class="form-label d-block">Sexe</label>
@@ -60,8 +84,9 @@
                   <input
                     class="form-check-input"
                     type="radio"
+                    name="gender"
                     value="Masculin"
-                    v-model="personnelForm.gender"
+                    v-model="patientForm.gender"
                   />
                   <label class="form-check-label">Masculin</label>
                 </div>
@@ -69,65 +94,45 @@
                   <input
                     class="form-check-input"
                     type="radio"
+                    name="gender"
                     value="Féminin"
-                    v-model="personnelForm.gender"
+                    v-model="patientForm.gender"
                   />
                   <label class="form-check-label">Féminin</label>
                 </div>
               </div>
               <div class="col-md-6 mb-3">
-                <label class="form-label">Adresse</label>
+                <label class="form-label">Contact d'urgence</label>
                 <input
                   type="text"
                   class="form-control"
-                  v-model="personnelForm.adress"
+                  v-model="patientForm.emergency_contact"
+                  required
                 />
               </div>
-              <div class="mb-3 col-md-6">
-                <label class="form-label">Fonction</label>
-                <select
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Profession</label>
+                <input
+                  type="text"
                   class="form-control"
-                  v-model="personnelForm.role_id"
+                  v-model="patientForm.profession"
                   required
-                >
-                  <option value="" disabled>Choisir une fonction</option>
-                  <option v-for="role in roles" :key="role.id" :value="role.id">
-                    {{ role.name }}
-                  </option>
-                </select>
+                />
               </div>
               <div class="col-md-6 mb-3">
                 <label class="form-label">Âge</label>
                 <input
                   type="number"
                   class="form-control"
-                  v-model="personnelForm.age"
-                />
-              </div>
-              <div class="col-md-6 mb-3">
-                <label class="form-label">Photo de profil</label>
-                <input
-                  type="file"
-                  class="form-control"
-                  @change="handleFileUpload"
-                  accept="image/*"
+                  v-model="patientForm.age"
+                  required
                 />
               </div>
             </div>
           </div>
 
+          <!-- Pied -->
           <div class="border-0 pb-4 px-5 adminuiux-content">
-            <div v-if="generatedPassword" class="alert alert-info mb-3">
-              <i class="bi bi-key me-2"></i>
-              <strong>Mot de passe :</strong> {{ generatedPassword }}
-              <button
-                type="button"
-                class="btn btn-sm btn-outline-secondary ms-3"
-                @click="copyPassword"
-              >
-                <i class="bi bi-clipboard"></i> Copier
-              </button>
-            </div>
             <div class="d-flex justify-content-between">
               <button
                 type="button"
@@ -140,7 +145,7 @@
               <button
                 type="button"
                 class="btn btn-theme"
-                @click="submitPersonnelForm"
+                @click="submitPatientForm"
                 :disabled="loading"
               >
                 {{ loading ? "Enregistrement..." : "Enregistrer" }}
@@ -156,14 +161,14 @@
       <div class="bg-theme-1-subtle rounded px-3 py-3">
         <div class="row gx-3 align-items-center">
           <div class="col-12 col-md mb-2 mb-sm-0">
-            <p class="h5">Gestion du Personnel</p>
+            <p class="h5">Gestion des Patients</p>
             <nav aria-label="breadcrumb">
               <ol class="breadcrumb mb-0">
                 <li class="breadcrumb-item">
                   <router-link :to="{ name: 'HomePage' }">Accueil</router-link>
                 </li>
                 <li class="breadcrumb-item active" aria-current="page">
-                  Personnel
+                  Patients
                 </li>
               </ol>
             </nav>
@@ -172,10 +177,10 @@
             <button
               class="btn btn-theme"
               data-bs-toggle="modal"
-              data-bs-target="#createPersonnelModal"
+              data-bs-target="#createPatientModal"
               @click="openCreateModal"
             >
-              <i class="bi bi-plus-lg me-1"></i> Créer un Personnel
+              <i class="bi bi-plus-lg me-1"></i> Créer Patient
             </button>
           </div>
         </div>
@@ -184,21 +189,23 @@
 
     <br />
 
+    <!-- DataTable -->
     <div class="container-fluid">
       <div class="row">
         <div class="col-12">
           <div class="card adminuiux-card mb-4">
             <div class="card-header">
-              <p class="h6 mb-0">Liste du Personnel</p>
+              <p class="h6 mb-0">Liste des Patients</p>
             </div>
             <div class="card-body px-2">
+              <!-- Loader -->
               <div v-if="tableLoading" class="text-center py-5">
                 <div class="spinner-border text-theme" role="status">
                   <span class="visually-hidden">Chargement...</span>
                 </div>
               </div>
 
-              <!-- v-show (pas v-if) : le DOM reste présent pour DataTables -->
+              <!-- v-show pour que DataTables trouve toujours le DOM -->
               <div v-show="!tableLoading">
                 <table
                   ref="dataTableRef"
@@ -207,12 +214,12 @@
                 >
                   <thead>
                     <tr>
-                      <th>Photo</th>
-                      <th>Nom Complet</th>
-                      <th>Matricule</th>
-                      <th>Téléphone</th>
+                      <th>Code</th>
+                      <th>Date</th>
+                      <th>Patient</th>
+                      <th>Contact</th>
                       <th>Sexe</th>
-                      <th>Adresse</th>
+                      <th>Payer</th>
                       <th>Action</th>
                     </tr>
                   </thead>
@@ -231,38 +238,35 @@
 import axios from "axios";
 
 export default {
-  name: "PersonnelIndex",
+  name: "HomePage",
 
   data() {
     return {
       baseUrl: "http://127.0.0.1:8000/",
-      personnelList: [],
-      roles: [],
+      patientList: [],
       dataTableInstance: null,
       tableLoading: false,
-      personnelForm: {
+      patientForm: {
         first_name: "",
         last_name: "",
-        role_id: "",
-        phone_number: "",
+        phone: "",
         gender: "",
-        age: "",
-        adress: "",
-        password: "",
-        picture: null,
+        quater: "",
+        emergency_contact: "",
+        matrimonial_situation: "",
+        profession: "",
+        age: null,
       },
       loading: false,
       isEditing: false,
       editingId: null,
-      generatedPassword: "",
     };
   },
 
   mounted() {
-    this.getPersonnel();
+    this.getPatients();
   },
 
-  // ✅ Détruire DataTables avant que Vue démonte le composant (changement de route)
   beforeUnmount() {
     this.destroyDataTable();
   },
@@ -275,41 +279,38 @@ export default {
         typeof window.$ === "undefined" ||
         typeof window.$.fn.DataTable === "undefined"
       ) {
-        console.error(
-          "jQuery ou DataTables non disponible. Vérifiez index.html.",
-        );
+        console.error("jQuery ou DataTables non disponible.");
         return;
       }
 
       const tableEl = this.$refs.dataTableRef;
       if (!tableEl) return;
 
-      // Détruire l'ancienne instance proprement
       this.destroyDataTable();
 
-      // Reconstruire le tbody manuellement (évite le conflit Vue/DataTables sur le DOM)
       const tbody = tableEl.querySelector("tbody");
       tbody.innerHTML = "";
 
-      this.personnelList.forEach((personnel) => {
+      this.patientList.forEach((patient) => {
         const tr = document.createElement("tr");
-        const imgSrc = personnel.picture
-          ? `${this.baseUrl}${personnel.picture}`
-          : "../../assets/img/avatar.jpg";
-        const badgeClass =
-          personnel.gender === "Masculin" ? "bg-primary" : "bg-pink";
+        const date = new Date(patient.created_at);
+        const badgeClass = patient.gender === "Masculin" ? "bg-primary" : "bg-pink";
+        const genderLabel = patient.gender === "Masculin" ? "Masculin" : "Féminin";
 
         tr.innerHTML = `
+          <td><span class="small text-muted">${patient.slug || ""}</span></td>
           <td>
-            <img src="${imgSrc}" alt="Avatar" class="rounded-circle"
-              style="width:40px;height:40px;object-fit:cover;"
-              onerror="this.src='../../assets/img/avatar.jpg'">
+            <p class="mb-0 fw-medium">${date.toLocaleTimeString()}</p>
+            <p class="text-secondary small mb-0">${date.toLocaleDateString()}</p>
           </td>
-          <td><span class="fw-medium">${personnel.first_name || ""} ${personnel.last_name || ""}</span></td>
-          <td><span class="small text-muted">${personnel.matricule || ""}</span></td>
-          <td><span class="small">${personnel.phone_number || ""}</span></td>
-          <td><span class="badge ${badgeClass}">${personnel.gender || ""}</span></td>
-          <td><span class="small">${personnel.adress || ""}</span></td>
+          <td><span class="fw-medium">${patient.first_name || ""} ${patient.last_name || ""}</span></td>
+          <td><span class="small">${patient.phone || ""}</span></td>
+          <td><span class="badge ${badgeClass}">${genderLabel}</span></td>
+          <td>
+            <a class="btn btn-theme badge badge-sm cp pay-btn" data-id="${patient.id}">
+              Payer
+            </a>
+          </td>
           <td>
             <div class="dropdown d-inline-block">
               <a class="btn btn-link no-caret cp" data-bs-toggle="dropdown">
@@ -317,18 +318,13 @@ export default {
               </a>
               <ul class="dropdown-menu dropdown-menu-end">
                 <li>
-                  <a class="dropdown-item cp view-btn" data-id="${personnel.id}">
-                    <i class="bi bi-eye me-2"></i>Voir Détails
-                  </a>
-                </li>
-                <li>
-                  <a class="dropdown-item cp edit-btn" data-id="${personnel.id}">
+                  <a class="dropdown-item cp edit-btn" data-id="${patient.id}">
                     <i class="bi bi-pencil me-2"></i>Modifier
                   </a>
                 </li>
                 <li><hr class="dropdown-divider"></li>
                 <li>
-                  <a class="dropdown-item theme-red cp delete-btn" data-id="${personnel.id}">
+                  <a class="dropdown-item theme-red cp delete-btn" data-id="${patient.id}">
                     <i class="bi bi-trash me-2"></i>Supprimer
                   </a>
                 </li>
@@ -339,7 +335,6 @@ export default {
         tbody.appendChild(tr);
       });
 
-      // Init DataTables avec langue française
       const dtInstance = window.$(tableEl).DataTable({
         language: {
           decimal: ",",
@@ -368,16 +363,13 @@ export default {
 
       this.dataTableInstance = dtInstance;
 
-      // Délégation d'événements jQuery (les boutons peuvent être dans n'importe quelle page de DataTables)
+      // Délégation d'événements jQuery
       window
         .$(tableEl)
-        .off("click", ".view-btn")
-        .on("click", ".view-btn", (e) => {
+        .off("click", ".pay-btn")
+        .on("click", ".pay-btn", (e) => {
           const id = window.$(e.currentTarget).data("id");
-          this.$router.push({
-            name: "ViewPersonnel",
-            query: { personnelId: id },
-          });
+          this.$router.push({ name: "PayService", params: { patientId: id } });
         });
 
       window
@@ -385,8 +377,8 @@ export default {
         .off("click", ".edit-btn")
         .on("click", ".edit-btn", (e) => {
           const id = parseInt(window.$(e.currentTarget).data("id"));
-          const personnel = this.personnelList.find((p) => p.id === id);
-          if (personnel) this.editPersonnel(personnel);
+          const patient = this.patientList.find((p) => p.id === id);
+          if (patient) this.editPatient(patient);
         });
 
       window
@@ -394,7 +386,7 @@ export default {
         .off("click", ".delete-btn")
         .on("click", ".delete-btn", (e) => {
           const id = parseInt(window.$(e.currentTarget).data("id"));
-          this.deletePersonnel(id);
+          this.deletePatient(id);
         });
     },
 
@@ -411,147 +403,111 @@ export default {
 
     // ─── Données ──────────────────────────────────────────────
 
-    async getPersonnel() {
+    async getPatients() {
       this.tableLoading = true;
       this.destroyDataTable();
       try {
         const token = localStorage.getItem("current_token");
-        const response = await axios.get(`${this.baseUrl}api/users`, {
+        const response = await axios.get(`${this.baseUrl}api/patients`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        this.personnelList = response.data.data.users || [];
+        this.patientList = response.data.data?.patients || [];
       } catch (error) {
         console.error(error);
         this.$swal.fire({
           icon: "error",
           title: "Erreur",
-          text: "Erreur lors du chargement du personnel.",
+          text: "Erreur lors du chargement des patients.",
         });
       } finally {
         this.tableLoading = false;
-        // ✅ nextTick garantit que v-show a rendu le tableau avant qu'on l'initialise
         this.$nextTick(() => {
           this.initDataTable();
         });
       }
     },
 
-    async loadRole() {
-      try {
-        const token = localStorage.getItem("current_token");
-        const response = await axios.get(`${this.baseUrl}api/roles`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        this.roles = response.data.data.roles || [];
-      } catch (error) {
-        console.error("Erreur chargement rôles", error);
-      }
-    },
-
     // ─── Modal ────────────────────────────────────────────────
 
-    async openCreateModal() {
+    openCreateModal() {
       this.resetForm();
-      this.generatedPassword = "";
-      await this.loadRole();
     },
 
-    editPersonnel(personnel) {
+    editPatient(patient) {
       this.isEditing = true;
-      this.editingId = personnel.id;
-      this.generatedPassword = "";
-      this.personnelForm = {
-        first_name: personnel.first_name || "",
-        last_name: personnel.last_name || "",
-        role_id: personnel.role_id || "",
-        phone_number: personnel.phone_number || "",
-        gender: personnel.gender || "",
-        age: personnel.age || "",
-        adress: personnel.adress || "",
-        password: "",
-        picture: null,
+      this.editingId = patient.id;
+      console.log("Patient gender reçu:", patient.gender);
+      this.patientForm = {
+        first_name: patient.first_name || "",
+        last_name: patient.last_name || "",
+        phone: patient.phone || "",
+        gender: patient.gender || "",
+        quater: patient.quater || "",
+        emergency_contact: patient.emergency_contact || "",
+        matrimonial_situation: patient.matrimonial_situation || "",
+        profession: patient.profession || "",
+        age: patient.age || null,
       };
-      this.loadRole().then(() => {
-        const modal = new bootstrap.Modal(
-          document.getElementById("createPersonnelModal"),
-        );
-        modal.show();
-      });
+      const modal = new bootstrap.Modal(
+        document.getElementById("createPatientModal"),
+      );
+      modal.show();
     },
 
     // ─── Formulaire ───────────────────────────────────────────
 
-    handleFileUpload(event) {
-      this.personnelForm.picture = event.target.files[0] || null;
-    },
-
-    async submitPersonnelForm() {
+    async submitPatientForm() {
       this.loading = true;
       try {
+        console.log("Données avant envoi:", this.patientForm); // ← Debug
+        console.log("Genre:", this.patientForm.gender);
         const token = localStorage.getItem("current_token");
-        const formData = new FormData();
-        Object.keys(this.personnelForm).forEach((key) => {
-          if (
-            this.personnelForm[key] !== null &&
-            this.personnelForm[key] !== ""
-          ) {
-            formData.append(key, this.personnelForm[key]);
-          }
-        });
-
         let response;
+
         if (this.isEditing) {
-          response = await axios.post(
-            `${this.baseUrl}api/users/${this.editingId}`,
-            formData,
-            {
-              headers: {
-                "Content-Type": "multipart/form-data",
-                Authorization: `Bearer ${token}`,
-              },
-            },
+          response = await axios.put(
+            `${this.baseUrl}api/patients/${this.editingId}`,
+            this.patientForm,
+            { headers: { Authorization: `Bearer ${token}` } },
           );
         } else {
-          response = await axios.post(`${this.baseUrl}api/register`, formData, {
-            headers: {
-              "Content-Type": "multipart/form-data",
-              Accept: "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          });
-          this.generatedPassword = response.data.data.password || "";
+          response = await axios.post(
+            `${this.baseUrl}api/patients`,
+            this.patientForm,
+            { headers: { Authorization: `Bearer ${token}` } },
+          );
         }
 
-        this.$swal.fire({
-          icon: "success",
-          title: this.isEditing
-            ? "Personnel modifié avec succès !"
-            : "Personnel créé avec succès !",
-          showConfirmButton: false,
-          timer: 2000,
-        });
+        if (response.data.success) {
+          this.$swal.fire({
+            icon: "success",
+            title: this.isEditing
+              ? "Patient modifié avec succès !"
+              : "Patient créé avec succès !",
+            showConfirmButton: false,
+            timer: 2000,
+          });
 
-        if (this.isEditing) {
-          const modalEl = document.getElementById("createPersonnelModal");
+          const modalEl = document.getElementById("createPatientModal");
           const modal = bootstrap.Modal.getInstance(modalEl);
           if (modal) modal.hide();
-          this.resetForm();
-        }
 
-        await this.getPersonnel();
+          this.resetForm();
+          await this.getPatients();
+        }
       } catch (error) {
         console.error(error);
         this.$swal.fire({
           icon: "error",
           title: "Erreur",
-          text: error.response?.data?.message || "Erreur lors de l'opération.",
+          text: "Erreur lors de la création ou modification du patient.",
         });
       } finally {
         this.loading = false;
       }
     },
 
-    async deletePersonnel(id) {
+    async deletePatient(id) {
       const result = await this.$swal.fire({
         title: "Êtes-vous sûr ?",
         text: "Cette action est irréversible !",
@@ -566,7 +522,7 @@ export default {
       if (result.isConfirmed) {
         try {
           const token = localStorage.getItem("current_token");
-          await axios.delete(`${this.baseUrl}api/users/${id}`, {
+          await axios.delete(`${this.baseUrl}api/patients/${id}`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           this.$swal.fire({
@@ -575,42 +531,29 @@ export default {
             showConfirmButton: false,
             timer: 2000,
           });
-          await this.getPersonnel(); // ✅ plus de window.location.reload()
+          await this.getPatients();
         } catch (error) {
           console.error(error);
           this.$swal.fire({
             icon: "error",
             title: "Erreur",
-            text: "Erreur lors de la suppression.",
+            text: "Erreur lors de la suppression du patient.",
           });
         }
       }
     },
 
-    copyPassword() {
-      if (this.generatedPassword) {
-        navigator.clipboard.writeText(this.generatedPassword).then(() => {
-          this.$swal.fire({
-            icon: "success",
-            title: "Copié !",
-            showConfirmButton: false,
-            timer: 1000,
-          });
-        });
-      }
-    },
-
     resetForm() {
-      this.personnelForm = {
+      this.patientForm = {
         first_name: "",
         last_name: "",
-        role_id: "",
-        phone_number: "",
+        phone: "",
         gender: "",
-        age: "",
-        adress: "",
-        password: "",
-        picture: null,
+        quater: "",
+        emergency_contact: "",
+        matrimonial_situation: "",
+        profession: "",
+        age: null,
       };
       this.isEditing = false;
       this.editingId = null;

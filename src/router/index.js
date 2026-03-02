@@ -10,6 +10,7 @@ import ListPay from '../pages/caisse/ListPay.vue';
 import ListPayMed from '../pages/caisse/ListPayMed.vue';
 import ListPayExam from '../pages/laboratoire/ListPayExam.vue';
 import Parameter from '../pages/patient/Parameter.vue';
+import ListPatient from '../pages/patient/Index.vue';
 import IndexPersonnel from '../pages/personnel/Index.vue';
 import Service from '../pages/service/Service.vue';
 import Product from '../pages/pharmacie/Product.vue';
@@ -21,21 +22,42 @@ import PaidMedoc from '../pages/caisse/UnprintedPayments.vue';
 import Labo from '../pages/laboratoire/Exam.vue';
 import ViewPersonnel from '../pages/personnel/ViewPersonnel.vue';
 
-const routes = [
- 
-  {
-    path: "/home",
-    component: MainLayout,
-    children: [
+// Fonction pour vérifier si l'utilisateur est authentifié
+const isAuthenticated = () => {
+  const token = localStorage.getItem('current_token');
+  const user = localStorage.getItem('current_user');
+  return token && user;
+};
 
+const routes = [
+  // Route de login
+  {
+    path: '/',
+    component: LoginLayout,
+    name: 'Login',
+    children: [
       {
-        path: "", 
-        name: "HomePage",
+        path: '',
+        name: 'LoginForm',
+        component: LoginForm,
+      },
+    ],
+  },
+  
+  // Routes protégées (nécessitent une authentification)
+  {
+    path: '/home',
+    component: MainLayout,
+    meta: { requiresAuth: true },
+    children: [
+      {
+        path: '', 
+        name: 'HomePage',
         component: HomePage,
       },
       {
-        path: "profile",
-        name: "Profile",
+        path: 'profile',
+        name: 'Profile',
         component: Profile,
       },
       {
@@ -43,7 +65,12 @@ const routes = [
         name: 'PayService',
         component: PayService,
       },
-       {
+      {
+        path: 'listpatient/',
+        name: 'ListPatient',
+        component: ListPatient,
+      },
+      {
         path: 'caisse/',
         name: 'Caisse',
         component: Caisse,
@@ -99,13 +126,13 @@ const routes = [
         component: PayMedoc,
       },
       {
-        path: "/paiements/non-imprimes",
-        name: "PaidMedoc",
+        path: '/paiements/non-imprimes',
+        name: 'PaidMedoc',
         component: PaidMedoc,
       },
       {
-        path: "/exam",
-        name: "Labo",
+        path: '/exam',
+        name: 'Labo',
         component: Labo,
       },
       {
@@ -118,25 +145,45 @@ const routes = [
         name: 'ListPayExam',
         component: ListPayExam,
       },
-
     ],
   },
+
+  // Redirection du chemin racine
   {
-    path: "/",
-    component: LoginLayout,
-    children: [
-      {
-        path: "",
-        name: "LoginForm",
-        component: LoginForm,
-      },
-    ],
+    path: '/',
+    redirect: () => {
+      return isAuthenticated() ? '/home' : '/';
+    },
+  },
+
+  // Redirection pour les routes non trouvées
+  {
+    path: '/:pathMatch(.*)*',
+    redirect: '/',
   },
 ];
 
 const router = createRouter({
   history: createWebHistory(),
   routes,
+});
+
+// Guard global pour vérifier l'authentification
+router.beforeEach((to, from, next) => {
+  const authenticated = isAuthenticated();
+
+  // Si l'utilisateur essaie d'accéder à une route protégée sans être connecté
+  if (to.meta.requiresAuth && !authenticated) {
+    next('/');
+  }
+  // Si l'utilisateur est connecté et essaie d'accéder à la page de login, le rediriger vers la home
+  else if (to.name === 'LoginForm' && authenticated) {
+    next('/home');
+  }
+  // Sinon, continuer vers la route
+  else {
+    next();
+  }
 });
 
 export default router;
