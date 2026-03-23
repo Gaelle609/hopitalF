@@ -126,7 +126,7 @@
                   type="text"
                   class="form-control"
                   v-model="categoryForm.name"
-                  placeholder="Ex : Comprimés, Sirops, Injections..."
+                  placeholder="Ex : Comprimés, Sirops, Injectables..."
                   required
                 />
               </div>
@@ -203,19 +203,19 @@ export default {
 
   const images = {
     comprime: new URL('../../assets/img/compri.png', import.meta.url).href,
-    sirup: new URL('../../assets/img/syrup.png', import.meta.url).href,
-    injection: new URL('../../assets/img/injection.png', import.meta.url).href,
-    collyr: new URL('../../assets/img/collyr.png', import.meta.url).href,
+    sirop: new URL('../../assets/img/syrup.png', import.meta.url).href,
+    injectable: new URL('../../assets/img/injection.png', import.meta.url).href,
+    collyre: new URL('../../assets/img/collyr.png', import.meta.url).href,
     pommade: new URL('../../assets/img/pommade.png', import.meta.url).href,
     materiel: new URL('../../assets/img/materiel.png', import.meta.url).href,
     default: new URL('../../assets/img/ste.png', import.meta.url).href,
   };
 
   if (lowerName.includes('comprimé')) return images.comprime;
-  if (lowerName.includes('sirup')) return images.sirup;
-  if (lowerName.includes('injection')) return images.injection;
+  if (lowerName.includes('sirop')) return images.sirop;
+  if (lowerName.includes('injectable')) return images.injectable;
   if (lowerName.includes('pommade')) return images.pommade;
-  if (lowerName.includes('collyr')) return images.collyr;
+  if (lowerName.includes('collyre')) return images.collyre;
   if (lowerName.includes('materiel')) return images.materiel;
 
   return images.default;
