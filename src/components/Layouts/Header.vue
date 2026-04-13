@@ -32,7 +32,7 @@
           id="header-navbar"
         >
           <ul class="navbar-nav mx-lg-3 mb-2 mb-md-0">
-            <li class="nav-item">
+            <li class="nav">
               <router-link :to="{ name: 'HomePage' }" class="nav-link"
                 >Acceuil</router-link
               >

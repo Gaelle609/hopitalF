@@ -65,6 +65,37 @@
               </div>
             </div>
           </li>
+          <li class="nav-item dropdown">
+            <a
+              href="javascrit:void(0)"
+              class="nav-link dropdown-toggle"
+              data-bs-toggle="dropdown"
+              ><i class="menu-icon" data-feather="book"></i>
+              <span class="menu-name">consultations</span></a
+            >
+            <div class="dropdown-menu">
+              <div class="nav-item">
+                <router-link :to="{ name: 'ListConsultations' }" class="nav-link"
+                  ><i class="menu-icon" data-feather="table"></i>
+                  <span class="menu-name">Liste consultations </span>
+                </router-link>
+              </div>
+
+              <div
+                v-if="
+                  $hasRole('infirmier') ||
+                  $hasRole('Admin') ||
+                  $hasRole('medecin')
+                "
+                class="nav-item"
+              >
+                <router-link :to="{ name: 'Parameter' }" class="nav-link">
+                  <i class="menu-icon bi bi-thermometer-half"></i>
+                  <span class="menu-name"> Prescription</span>
+                </router-link>
+              </div>
+            </div>
+          </li>
           <li v-if="$hasRole('Admin') || $hasRole('medecin')" class="nav-item">
             <router-link :to="{ name: 'IndexPersonnel' }" class="nav-link"
               ><i class="menu-icon bi bi-person"></i>

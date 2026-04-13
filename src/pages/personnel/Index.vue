@@ -162,7 +162,7 @@
                 <li class="breadcrumb-item">
                   <router-link :to="{ name: 'HomePage' }">Accueil</router-link>
                 </li>
-                <li class="breadcrumb-item active" aria-current="page">
+                <li class="breadcrumb-item bi active" aria-current="page">
                   Personnel
                 </li>
               </ol>

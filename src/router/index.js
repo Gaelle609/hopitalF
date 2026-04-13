@@ -21,14 +21,37 @@ import PayExam from '../pages/laboratoire/PayExam.vue';
 import PaidMedoc from '../pages/caisse/UnprintedPayments.vue';
 import Labo from '../pages/laboratoire/Exam.vue';
 import ViewPersonnel from '../pages/personnel/ViewPersonnel.vue';
+import ListConsultation from '../pages/consultation/ListConsultation.vue';
+import ConsultForm from '../pages/consultation/ConsultForm.vue';
 
 // Fonction pour vérifier si l'utilisateur est authentifié
+// const isAuthenticated = () => {
+//   const token = localStorage.getItem('current_token');
+//   const user = localStorage.getItem('current_user');
+//   return token && user;
+// };
+
+
 const isAuthenticated = () => {
   const token = localStorage.getItem('current_token');
-  const user = localStorage.getItem('current_user');
-  return token && user;
-};
 
+  if (!token) return false;
+
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    const now = Date.now() / 1000;
+
+    if (payload.exp < now) {
+      localStorage.removeItem('current_token');
+      localStorage.removeItem('current_user');
+      return false;
+    }
+
+    return true;
+  } catch (e) {
+    return false;
+  }
+}; 
 const routes = [
   // Route de login
   {
@@ -143,7 +166,17 @@ const routes = [
       {
         path: 'listpayExam/',
         name: 'ListPayExam',
-        component: ListPayExam,
+        component: ListPayExam, 
+      },
+      {
+        path: 'listconsultations/',
+        name: 'ListConsultations',
+        component: ListConsultation,
+      },
+      {
+        path: 'con/:patientId',
+        name: 'Consultation',
+        component: ConsultForm,
       },
     ],
   },

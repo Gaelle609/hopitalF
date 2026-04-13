@@ -303,6 +303,14 @@ export default {
         );
 
         if (response.data.success) {
+
+          // récupérer l'id de la consultation
+      const consultationId = response.data.data.consultation.id;
+
+      // stocker dans le localStorage
+      localStorage.setItem("current_consultation_id", consultationId);
+
+
           this.$swal.fire({
             icon: "success",
             title: "Paramètres enregistrés avec succès !",
