@@ -1,16 +1,23 @@
 <template>
   <div class="container-fluid mt-3">
-    <!-- En-tête -->
+
+    <!-- HEADER -->
     <div class="bg-theme-1-subtle rounded px-3 py-3">
       <div class="row gx-3 align-items-center">
         <div class="col-12 col-md mb-2 mb-sm-0">
-          <p class="h5">Paramètre du patient</p>
+          <p class="h5">Paramètres du patient</p>
+
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb mb-0">
-              <li class="breadcrumb-item bi">
-                <router-link :to="{ name: 'HomePage' }">Accueil</router-link>
+              <li class="breadcrumb-item">
+                <router-link :to="{ name: 'HomePage' }">
+                  Accueil
+                </router-link>
               </li>
-              <li class="breadcrumb-item bi active" aria-current="page">Paramètre</li>
+
+              <li class="breadcrumb-item active bi">
+                Paramètres
+              </li>
             </ol>
           </nav>
         </div>
@@ -20,23 +27,36 @@
     <br />
 
     <div class="row">
-      <!-- Table des patients -->
+
+      <!-- TABLE PATIENT -->
       <div class="col-12 col-lg-6">
+
         <div class="card adminuiux-card mb-4">
+
           <div class="card-header">
-            <p class="h6 mb-0">Prendre les paramètres</p>
+            <p class="h6 mb-0">
+              Sélection du patient
+            </p>
           </div>
+
           <div class="card-body px-2">
-            <!-- Loader -->
+
+            <!-- LOADER -->
             <div v-if="tableLoading" class="text-center py-5">
               <div class="spinner-border text-theme" role="status">
-                <span class="visually-hidden">Chargement...</span>
+                <span class="visually-hidden">
+                  Chargement...
+                </span>
               </div>
             </div>
 
-            <!-- v-show pour que DataTables trouve toujours le DOM -->
+            <!-- DATATABLE -->
             <div v-show="!tableLoading">
-              <table ref="dataTableRef" class="table w-100" style="width: 100%">
+
+              <table
+                ref="dataTableRef"
+                class="table table-hover w-100"
+              >
                 <thead>
                   <tr>
                     <th>Nom</th>
@@ -45,57 +65,191 @@
                     <th>Action</th>
                   </tr>
                 </thead>
+
                 <tbody></tbody>
               </table>
+
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Formulaire paramètres -->
+      <!-- FORMULAIRE -->
       <div class="col-12 col-lg-6">
+
         <form @submit.prevent="submitForm">
-          <div class="card shadow text-center px-4">
-            <div class="d-flex justify-content-center mt-3 mb-2">
-              <img id="img" src="../../assets/img/wecare.png" alt="Logo" />
+
+          <div class="card shadow border-0">
+
+            <!-- HEADER CARD -->
+            <div class="card-header bg-white border-0 text-center pt-4">
+
+              <img
+                id="img"
+                src="../../assets/img/wecare.png"
+                alt="Logo"
+              />
+
+              <h5 class="mt-3">
+                Prise des paramètres
+              </h5>
+
             </div>
 
-            <div class="card-body text-start">
-              <div class="mb-3">
-                <label class="form-label">Tension</label>
-                <input type="number" v-model="consform.tension" class="form-control" />
-              </div>
+            <!-- BODY -->
+            <div class="card-body text-start px-4">
 
-              <div class="mb-3">
-                <label class="form-label">Température</label>
-                <input type="number" v-model="consform.temperature" class="form-control" />
-              </div>
+              <!-- PATIENT -->
+              <div class="mb-4">
 
-              <div class="mb-3">
-                <label class="form-label">Poids</label>
-                <input type="number" v-model="consform.poids" class="form-control" />
-              </div>
+                <label class="form-label fw-bold">
+                  Patient sélectionné
+                </label>
 
-              <div class="mb-3">
-                <label class="form-label">Patient sélectionné</label>
                 <input
                   type="text"
-                  class="form-control"
+                  class="form-control bg-light"
                   :value="selectedPatientName"
                   disabled
-                  placeholder="Patient sélectionner"
+                  placeholder="Aucun patient sélectionné"
                 />
-                <input type="hidden" v-model="consform.patient_id" />
+
               </div>
 
+              <!-- CONSTANTES -->
+              <div class="border rounded p-3 mb-4">
+
+                <h6 class="text-theme mb-3">
+                  Constantes vitales
+                </h6>
+
+                <div class="row">
+
+                  <!-- TEMPERATURE -->
+                  <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+                      Température (°C)
+                    </label>
+
+                    <input
+                      type="number"
+                      step="0.1"
+                      v-model="consform.temperature"
+                      class="form-control"
+                      placeholder="37.5"
+                    />
+
+                  </div>
+
+                  <!-- TENSION -->
+                  <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+                      Tension artérielle
+                    </label>
+
+                    <input
+                      type="text"
+                      v-model="consform.tension"
+                      class="form-control"
+                      placeholder="12/8"
+                    />
+
+                  </div>
+
+                  <!-- POIDS -->
+                  <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+                      Poids (Kg)
+                    </label>
+
+                    <input
+                      type="number"
+                      step="0.1"
+                      v-model="consform.poids"
+                      class="form-control"
+                      placeholder="70"
+                    />
+
+                  </div>
+
+                  <!-- FC -->
+                  <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+                      Fréquence cardiaque (FC)
+                    </label>
+
+                    <input
+                      type="number"
+                      v-model="consform.fc"
+                      class="form-control"
+                      placeholder="80 bpm"
+                    />
+
+                  </div>
+
+                  <!-- FR -->
+                  <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+                      Fréquence respiratoire (FR)
+                    </label>
+
+                    <input
+                      type="number"
+                      v-model="consform.fr"
+                      class="form-control"
+                      placeholder="18"
+                    />
+
+                  </div>
+
+                </div>
+              </div>
+
+              <!-- OBSERVATION -->
+              <div class="mb-4">
+
+                <label class="form-label fw-bold">
+                  Observation
+                </label>
+
+                <textarea
+                  v-model="consform.autre"
+                  class="form-control"
+                  rows="4"
+                  placeholder="Observation infirmière..."
+                ></textarea>
+
+              </div>
+
+              <!-- BOUTON -->
               <button
                 id="btn"
                 type="submit"
-                class="btn btn-theme w-100"
+                class="btn btn-theme w-100 py-2"
                 :disabled="loading || !consform.patient_id"
               >
-                {{ loading ? "Enregistrement..." : "Valider" }}
+
+                <span v-if="loading">
+
+                  <span
+                    class="spinner-border spinner-border-sm me-2"
+                  ></span>
+
+                  Enregistrement...
+
+                </span>
+
+                <span v-else>
+                  Enregistrer les paramètres
+                </span>
+
               </button>
+
             </div>
           </div>
         </form>
@@ -117,13 +271,19 @@ export default {
       dataTableInstance: null,
       tableLoading: false,
       loading: false,
+
       selectedPatient: null,
+
       consform: {
         temperature: "",
         tension: "",
-        poids: 0,
+        poids: "",
+        fc: "",
+        fr: "",
+        autre: "",
         patient_id: null,
         id_per: null,
+        statut: "Pending",
       },
     };
   },
@@ -131,7 +291,11 @@ export default {
   computed: {
     selectedPatientName() {
       if (!this.selectedPatient) return "";
-      return `${this.selectedPatient.first_name || ""} ${this.selectedPatient.last_name || ""}`.trim();
+
+      return `
+        ${this.selectedPatient.first_name || ""}
+        ${this.selectedPatient.last_name || ""}
+      `.trim();
     },
   },
 
@@ -144,155 +308,210 @@ export default {
   },
 
   methods: {
-    // ─── DataTables ───────────────────────────────────────────
 
-    initDataTable() {
-      if (
-        typeof window.$ === "undefined" ||
-        typeof window.$.fn.DataTable === "undefined"
-      ) {
-        console.error("jQuery ou DataTables non disponible.");
-        return;
-      }
+    // DATATABLE
+    // DATATABLE
+initDataTable() {
 
-      const tableEl = this.$refs.dataTableRef;
-      if (!tableEl) return;
+  if (
+    typeof window.$ === "undefined" ||
+    typeof window.$.fn.DataTable === "undefined"
+  ) {
+    console.error("jQuery ou DataTables indisponible");
+    return;
+  }
 
-      this.destroyDataTable();
+  const tableEl = this.$refs.dataTableRef;
 
-      const tbody = tableEl.querySelector("tbody");
-      tbody.innerHTML = "";
+  if (!tableEl) return;
 
-      this.patientList.forEach((patient) => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td><span class="fw-medium">${patient.first_name || ""}</span></td>
-          <td><span>${patient.last_name || ""}</span></td>
-          <td><span class="small">${patient.age || "N/A"}</span></td>
-          <td>
-            <button class="btn btn-theme badge badge-sm cp select-btn" data-id="${patient.id}">
-              Paramètre
-            </button>
-          </td>
-        `;
-        tbody.appendChild(tr);
-      });
+  this.destroyDataTable();
 
-      const dtInstance = window.$(tableEl).DataTable({
-        language: {
-          decimal: ",",
-          thousands: ".",
-          emptyTable: "Aucun patient disponible",
-          info: "Affichage de _START_ à _END_ sur _TOTAL_ entrées",
-          infoEmpty: "Affichage de 0 à 0 sur 0 entrée",
-          infoFiltered: "(filtré depuis _MAX_ entrées au total)",
-          lengthMenu: "Afficher _MENU_ entrées",
-          loadingRecords: "Chargement...",
-          processing: "Traitement...",
-          search: "Rechercher :",
-          zeroRecords: "Aucun résultat trouvé",
-          paginate: {
-            first: "Premier",
-            last: "Dernier",
-            next: "Suivant",
-            previous: "Précédent",
-          },
-        },
-        responsive: true,
-        pageLength: 10,
-        destroy: true,
-        columnDefs: [{ orderable: false, targets: [3] }],
-      });
+  const tbody = tableEl.querySelector("tbody");
 
-      this.dataTableInstance = dtInstance;
+  tbody.innerHTML = "";
 
-      // Délégation d'événements jQuery
-      window
-        .$(tableEl)
-        .off("click", ".select-btn")
-        .on("click", ".select-btn", (e) => {
-          const id = parseInt(window.$(e.currentTarget).data("id"));
-          const patient = this.patientList.find((p) => p.id === id);
-          if (patient) this.selectPatient(patient);
-        });
+  this.patientList.forEach((patient) => {
+
+    const tr = document.createElement("tr");
+
+    tr.innerHTML = `
+      <td>${patient.first_name || ""}</td>
+      <td>${patient.last_name || ""}</td>
+      <td>${patient.age || "N/A"}</td>
+
+      <td>
+
+        <button
+          class="btn btn-theme btn-sm select-btn"
+          data-id="${patient.id}"
+        >
+          Sélectionner
+        </button>
+
+        <button
+          class="btn btn-warning btn-sm view-btn"
+          data-id="${patient.id}"
+        >
+          Voir
+        </button>
+
+      </td>
+    `;
+
+    tbody.appendChild(tr);
+  });
+
+  this.dataTableInstance = window.$(tableEl).DataTable({
+    responsive: true,
+    pageLength: 10,
+    destroy: true,
+
+    language: {
+      search: "Rechercher :",
+      lengthMenu: "Afficher _MENU_ entrées",
+      zeroRecords: "Aucun résultat trouvé",
+      info: "Affichage de _START_ à _END_ sur _TOTAL_",
+      infoEmpty: "Aucune donnée disponible",
+      paginate: {
+        next: "Suivant",
+        previous: "Précédent",
+      },
     },
 
+    columnDefs: [
+      {
+        orderable: false,
+        targets: [3],
+      },
+    ],
+  });
+
+  // EVENT : VIEW PARAMETRES
+  window
+    .$(tableEl)
+    .off("click", ".view-btn")
+    .on("click", ".view-btn", (e) => {
+
+      const id = parseInt(
+        window.$(e.currentTarget).data("id")
+      );
+
+      this.voirParametres(id);
+
+    });
+
+  // EVENT : SELECT PATIENT
+  window
+    .$(tableEl)
+    .off("click", ".select-btn")
+    .on("click", ".select-btn", (e) => {
+
+      const id = parseInt(
+        window.$(e.currentTarget).data("id")
+      );
+
+      const patient = this.patientList.find(
+        (p) => p.id === id
+      );
+
+      if (patient) {
+        this.selectPatient(patient);
+      }
+
+    });
+},
+voirParametres(patientId) {
+
+  this.$router.push({
+    name: 'ViewParams',
+    params: {
+      patientId: patientId
+    }
+  })
+
+},
     destroyDataTable() {
       if (this.dataTableInstance) {
-        try {
-          this.dataTableInstance.destroy();
-        } catch (e) {
-          /* silencieux */
-        }
+        this.dataTableInstance.destroy();
         this.dataTableInstance = null;
       }
     },
 
-    // ─── Données ──────────────────────────────────────────────
-
+    // GET PATIENTS
     async getPatients() {
-      this.tableLoading = true;
-      this.destroyDataTable();
-      try {
-        const token = localStorage.getItem("current_token");
-        if (!token) throw new Error("Token d'authentification manquant");
 
-        const response = await axios.get(`${this.baseUrl}api/caisse/done`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+      this.tableLoading = true;
+
+      try {
+
+        const token = localStorage.getItem("current_token");
+
+        const response = await axios.get(
+          `${this.baseUrl}api/caisse/done`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         const data = response.data.data || {};
-        this.patientList = Array.isArray(data.patients) ? data.patients : [];
-      } catch (error) {
-        console.error("Erreur lors du chargement des patients:", error);
-        this.patientList = [];
 
-        if (error.response?.status === 401) {
-          this.$swal.fire({
-            icon: "error",
-            title: "Session expirée",
-            text: "Veuillez vous reconnecter.",
-          });
-        } else {
-          this.$swal.fire({
-            icon: "error",
-            title: "Erreur",
-            text: "Erreur lors du chargement des patients.",
-          });
-        }
+        this.patientList = Array.isArray(data.patients)
+          ? data.patients
+          : [];
+
+      } catch (error) {
+
+        console.error(error);
+
+        this.$swal.fire({
+          icon: "error",
+          title: "Erreur",
+          text: "Impossible de charger les patients",
+        });
+
       } finally {
+
         this.tableLoading = false;
+
         this.$nextTick(() => {
           this.initDataTable();
         });
       }
     },
-
-    // ─── Sélection ────────────────────────────────────────────
-
+    
+    // SELECT PATIENT
     selectPatient(patient) {
+
       this.selectedPatient = patient;
+
       this.consform.patient_id = patient.id;
-      console.log("Patient sélectionné:", patient);
     },
 
-    // ─── Formulaire ───────────────────────────────────────────
-
+    // SUBMIT
     async submitForm() {
+
       if (!this.consform.patient_id) {
+
         this.$swal.fire({
           icon: "warning",
           title: "Attention",
-          text: "Veuillez sélectionner un patient.",
+          text: "Veuillez sélectionner un patient",
         });
+
         return;
       }
 
       this.loading = true;
+
       try {
+
         const token = localStorage.getItem("current_token");
+
         const response = await axios.post(
-          `${this.baseUrl}api/consultations`,
+          `${this.baseUrl}api/parametres`,
           this.consform,
           {
             headers: {
@@ -304,41 +523,48 @@ export default {
 
         if (response.data.success) {
 
-          // récupérer l'id de la consultation
-      const consultationId = response.data.data.consultation.id;
-
-      // stocker dans le localStorage
-      localStorage.setItem("current_consultation_id", consultationId);
-
-
           this.$swal.fire({
             icon: "success",
-            title: "Paramètres enregistrés avec succès !",
-            showConfirmButton: false,
+            title: "Succès",
+            text: "Paramètres enregistrés avec succès",
             timer: 2000,
+            showConfirmButton: false,
           });
+
           this.resetForm();
         }
+
       } catch (error) {
+
         console.error(error);
+
         this.$swal.fire({
           icon: "error",
           title: "Erreur",
-          text: "Erreur lors de l'enregistrement des paramètres.",
+          text: "Erreur lors de l'enregistrement",
         });
+
       } finally {
+
         this.loading = false;
       }
     },
 
+    // RESET
     resetForm() {
+
       this.consform = {
         temperature: "",
         tension: "",
-        poids: 0,
+        poids: "",
+        fc: "",
+        fr: "",
+        autre: "",
         patient_id: null,
         id_per: null,
+        statut: "Pending",
       };
+
       this.selectedPatient = null;
     },
   },
@@ -346,23 +572,42 @@ export default {
 </script>
 
 <style scoped>
+
 .cp {
   cursor: pointer;
 }
+
+#img {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+}
+
+.form-control {
+  border-radius: 10px;
+}
+
 .form-control:focus {
   border-color: rgb(59, 105, 255);
   box-shadow: 0 0 5px rgba(59, 105, 255, 0.4);
 }
-#img {
-  height: 80px;
-  width: 80px;
-  border-radius: 70rem;
+
+#btn {
+  border-radius: 10px;
+  font-weight: 600;
 }
+
 #btn:hover {
-  box-shadow: 3px 3px 3px rgb(59, 105, 255);
+  box-shadow: 0 4px 10px rgba(59, 105, 255, 0.4);
 }
+
+.card {
+  border-radius: 15px;
+}
+
 .spinner-border {
   width: 3rem;
   height: 3rem;
 }
+
 </style>

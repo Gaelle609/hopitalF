@@ -23,6 +23,7 @@ import Labo from '../pages/laboratoire/Exam.vue';
 import ViewPersonnel from '../pages/personnel/ViewPersonnel.vue';
 import ListConsultation from '../pages/consultation/ListConsultation.vue';
 import ConsultForm from '../pages/consultation/ConsultForm.vue';
+import ViewParam from '../pages/patient/ViewParams.vue';
 
 // Fonction pour vérifier si l'utilisateur est authentifié
 // const isAuthenticated = () => {
@@ -177,6 +178,10 @@ const routes = [
         path: 'con/:patientId',
         name: 'Consultation',
         component: ConsultForm,
+      }, {
+        path: 'vparem/:patientId',
+        name: 'ViewParams',
+        component: ViewParam,
       },
     ],
   },
