@@ -14,7 +14,7 @@
                   <router-link :to="{ name: 'HomePage' }">Accueil</router-link>
                 </li>
                 <li class="breadcrumb-item bi active" aria-current="page">
-                  Liste des Patients consultés
+                  Patient a consultés
                 </li>
               </ol>
             </nav>
@@ -35,51 +35,162 @@
 
     <br />
 
-    <!-- DataTable -->
     <div class="container-fluid">
-      <div class="row">
-        <div class="col-12">
-          <div class="card adminuiux-card mb-4">
-            <div class="card-header">
-              <p class="h6 mb-0">Liste des Patients à Consulter</p>
-            </div>
-            <div class="card-body px-2">
-              <!-- Loader -->
-              <div v-if="tableLoading" class="text-center py-5">
-                <div class="spinner-border text-theme" role="status">
-                  <span class="visually-hidden">Chargement...</span>
-                </div>
-              </div>
 
-              <!-- v-show pour que DataTables trouve toujours le DOM -->
-              <div v-show="!tableLoading">
-                <table
-                  ref="dataTableRef"
-                  class="table w-100"
-                  style="width: 100%"
-                >
-                  <thead>
-                    <tr>
-                      <th>Code</th>
-                      <th>Date</th>
-                      <th>Patient</th>
-                      <th>Contact</th>
-                      <th>Sexe</th>
-                      <th>Temperature</th>
-                      <th>Tension</th>
-                      <th>poids</th>
-                      <th>Action</th>
-                      
-                    </tr>
-                  </thead>
-                  <tbody></tbody>
-                </table>
-              </div>
-            </div>
+  <div class="card shadow-sm border-0 mb-4">
+    <div class="card-body">
+
+      <div class="row align-items-center">
+
+        <div class="col-md-auto text-center">
+          <div class="patient-avatar">
+            <i class="bi bi-person-fill"></i>
           </div>
+        </div>
+
+        <div class="col">
+
+          <h3 class="fw-bold mb-2">
+            {{ patient.first_name }}
+            {{ patient.last_name }}
+          </h3>
+
+          <div class="row">
+
+            <div class="col-md-4">
+              <p><strong>Code :</strong> {{ patient.slug }}</p>
+            </div>
+
+            <div class="col-md-4">
+              <p><strong>Age :</strong> {{ patient.age }} ans</p>
+            </div>
+
+            <div class="col-md-4">
+              <p><strong>Sexe :</strong> {{ patient.gender }}</p>
+            </div>
+
+            <div class="col-md-4">
+              <p><strong>Téléphone :</strong> {{ patient.phone }}</p>
+            </div>
+
+            <div class="col-md-4">
+              <p><strong>Profession :</strong> {{ patient.profession }}</p>
+            </div>
+
+            <div class="col-md-4">
+              <p><strong>Quartier :</strong> {{ patient.quater }}</p>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <div class="row mb-4">
+
+    <div class="col-md-3">
+      <div class="card vitale-card text-white temp">
+        <div class="card-body text-center">
+          <h2>🌡</h2>
+          <h4>{{ parametre.temperature }} °C</h4>
+          <small>Température</small>
         </div>
       </div>
     </div>
+
+    <div class="col-md-3">
+      <div class="card vitale-card  text-white param">
+        <div class="card-body text-center">
+          <h2>🩸</h2>
+          <h4>{{ parametre.tension }}</h4>
+          <small>Tension</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card vitale-card text-white fc">
+        <div class="card-body text-center">
+          <h2>❤️</h2>
+          <h4>{{ parametre.fc }}</h4>
+          <small>FC</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card vitale-card text-dark pds">
+        <div class="card-body text-center">
+          <h2>⚖</h2>
+          <h4>{{ parametre.poids }} Kg</h4>
+          <small>Poids</small>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="card shadow-sm border-0">
+
+    <div class="card-header border-0 bg-light">
+      <h5 class="mb-0">
+        Paramètres reçus
+      </h5>
+    </div>
+
+    <div class="card-body">
+
+      <div class="row">
+
+        <div class="col-md-6 mb-3">
+          <strong>Température :</strong>
+          {{ parametre.temperature }} °C
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <strong>Tension :</strong>
+          {{ parametre.tension }}
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <strong>Fréquence cardiaque :</strong>
+          {{ parametre.fc }} bpm
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <strong>Fréquence respiratoire :</strong>
+          {{ parametre.fr }}
+        </div>
+
+        <div class="col-12">
+          <strong>Observation :</strong>
+          {{ parametre.autre || 'Aucune observation' }}
+        </div>
+
+      </div>
+  <div class="text-center py-4">
+    <h5 class="mb-3">
+      Le patient est prêt pour la consultation médicale
+    </h5>
+
+    <button
+  class="btn btn-success btn-lg px-5"
+  @click="commencerConsultation"
+  :disabled="!patient.id"
+>
+  <i class="bi bi-clipboard2-pulse-fill me-2"></i>
+  Commencer la consultation
+</button>
+  </div>
+    </div>
+
+  </div>
+
+</div>
   </div>
 </template>
 
@@ -87,184 +198,131 @@
 import axios from "axios";
 
 export default {
-  name: "HomePage",
+  name: "ConsultationPatient",
 
   data() {
     return {
       baseUrl: "http://127.0.0.1:8000/",
-      patientList: [],
-      dataTableInstance: null,
-      tableLoading: false,
+
       loading: false,
-      
+
+      patient: {},
+
+      parametre: {
+        temperature: "",
+        tension: "",
+        fc: "",
+        fr: "",
+        poids: "",
+        autre: "",
+      },
     };
   },
 
-  mounted() {
-    this.getPatients();
-  },
-
-  beforeUnmount() {
-    this.destroyDataTable();
+  async mounted() {
+    await this.getConsultation();
   },
 
   methods: {
-    // ─── DataTables ───────────────────────────────────────────
+   async getConsultation() {
+  this.loading = true;
 
-    initDataTable() {
-      if (
-        typeof window.$ === "undefined" ||
-        typeof window.$.fn.DataTable === "undefined"
-      ) {
-        console.error("jQuery ou DataTables non disponible.");
-        return;
-      }
+  try {
+    const token = localStorage.getItem("current_token");
+    const patientId = this.$route.params.patientId;
 
-      const tableEl = this.$refs.dataTableRef;
-      if (!tableEl) return;
-
-      this.destroyDataTable();
-
-      const tbody = tableEl.querySelector("tbody");
-      tbody.innerHTML = "";
-
-      this.patientList.forEach((patient) => {
-        const tr = document.createElement("tr");
-        const date = new Date(patient.created_at);
-        const badgeClass = patient.gender === "Masculin" ? "bg-primary" : "bg-pink";
-        const genderLabel = patient.gender === "Masculin" ? "Masculin" : "Féminin";
-
-        tr.innerHTML = `
-          <td><span class="small text-muted">${patient.slug || ""}</span></td>
-          <td>
-            <p class="mb-0 fw-medium">${date.toLocaleTimeString()}</p>
-            <p class="text-secondary small mb-0">${date.toLocaleDateString()}</p>
-          </td>
-          <td><span class="fw-medium">${patient.first_name || ""} ${patient.last_name || ""}</span></td>
-          <td><span class="small">${patient.phone || ""}</span></td>
-          <td><span class="badge ${badgeClass}">${genderLabel}</span></td>
-          <td><span class="small">${patient.temperature || ""}</span></td>
-          <td><span class="small">${patient.tension || ""}</span></td>
-          <td><span class="small">${patient.weight || ""}</span></td>
-          <td>
-            <a class="btn btn-theme badge badge-sm cp cons-btn" data-id="${patient.id}">
-              Consulter
-            </a>
-          </td>
-          
-        `;
-        tbody.appendChild(tr);
-      });
-
-      const dtInstance = window.$(tableEl).DataTable({
-        language: {
-          decimal: ",",
-          thousands: ".",
-          emptyTable: "Aucune donnée disponible",
-          info: "Affichage de _START_ à _END_ sur _TOTAL_ entrées",
-          infoEmpty: "Affichage de 0 à 0 sur 0 entrée",
-          infoFiltered: "(filtré depuis _MAX_ entrées au total)",
-          lengthMenu: "Afficher _MENU_ entrées",
-          loadingRecords: "Chargement...",
-          processing: "Traitement...",
-          search: "Rechercher :",
-          zeroRecords: "Aucun résultat trouvé",
-          paginate: {
-            first: "Premier",
-            last: "Dernier",
-            next: "Suivant",
-            previous: "Précédent",
-          },
+    const response = await axios.get(
+      `${this.baseUrl}api/pat/${patientId}/params`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
-        responsive: true,
-        pageLength: 10,
-        destroy: true,
-        columnDefs: [{ orderable: false, targets: [0, 6] }],
+      }
+    );
+
+    this.patient = response.data.data.patient;
+
+    this.parametre =
+      response.data.data.patient.parametre.length > 0
+        ? response.data.data.patient.parametre[0]
+        : {
+            temperature: "",
+            tension: "",
+            fc: "",
+            fr: "",
+            poids: "",
+            autre: "",
+          };
+
+  } catch (error) {
+    console.error(error);
+  } finally {
+    this.loading = false;
+  }
+},
+
+   commencerConsultation() {
+  this.$router.push({
+    name: "ConsultForm",
+    params: {
+      patientId: this.patient.id,
+    },
+  });
+},
+
+    formatDate(date) {
+      if (!date) return "-";
+
+      return new Date(date).toLocaleDateString("fr-FR", {
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
       });
-
-      this.dataTableInstance = dtInstance;
-
-      // Délégation d'événements jQuery
-      window
-        .$(tableEl)
-        .off("click", ".cons-btn")
-        .on("click", ".cons-btn", (e) => {
-          const id = window.$(e.currentTarget).data("id");
-          this.$router.push({ name: "PayService", params: { patientId: id } });
-        });
-
-      
     },
-
-    destroyDataTable() {
-      if (this.dataTableInstance) {
-        try {
-          this.dataTableInstance.destroy();
-        } catch (e) {
-          /* silencieux */
-        }
-        this.dataTableInstance = null;
-      }
-    },
-
-    // ─── Données ──────────────────────────────────────────────
-
-    async getPatients() {
-      this.tableLoading = true;
-      this.destroyDataTable();
-      try {
-        const token = localStorage.getItem("current_token");
-        const response = await axios.get(`${this.baseUrl}api/consultations`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        this.patientList = response.data.data?.consultation || [];
-      } catch (error) {
-        console.error(error);
-        this.$swal.fire({
-          icon: "error",
-          title: "Erreur",
-          text: "Erreur lors du chargement des patients.",
-        });
-      } finally {
-        this.tableLoading = false;
-        this.$nextTick(() => {
-          this.initDataTable();
-        });
-      }
-    },
-
-    
   },
 };
 </script>
 
 <style scoped>
-#modal-logo {
-  height: 80px;
-  width: 80px;
-  border-radius: 70rem;
-}
-.cp {
-  cursor: pointer;
-}
-.form-control:focus {
-  border-color: rgb(59, 105, 255);
-  box-shadow: 0 0 5px rgba(59, 105, 255, 0.4);
-}
-.btn-theme:hover {
-  box-shadow: 3px 3px 3px rgba(59, 105, 255, 0.3);
-}
-.theme-red {
-  color: #dc3545;
-}
-.theme-red:hover {
-  background-color: #dc3545;
+.patient-avatar {
+  width: 120px;
+  height: 120px;
+  background: #d5d6d6;
   color: white;
+  border-radius: 50%;
+  font-size: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.bg-pink {
-  background-color: #e83e8c !important;
+
+.vitale-card {
+  border: none;
+  border-radius: 15px;
+  transition: 0.3s;
 }
-.no-caret::after {
-  display: none;
+
+.vitale-card:hover {
+  transform: translateY(-5px);
+}
+
+.card {
+  border-radius: 15px;
+}
+
+.temp {
+  background-color: #b80202;
+}
+
+.param{
+  background-color: rgb(176, 159, 247);
+}
+
+.fc {
+  background-color: rgb(4, 155, 14);
+}
+
+.pds {
+  background-color: rgb(249, 253, 14);
 }
 </style>

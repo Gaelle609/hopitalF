@@ -22,6 +22,7 @@ import PaidMedoc from '../pages/caisse/UnprintedPayments.vue';
 import Labo from '../pages/laboratoire/Exam.vue';
 import ViewPersonnel from '../pages/personnel/ViewPersonnel.vue';
 import ListConsultation from '../pages/consultation/ListConsultation.vue';
+import Consultation from '../pages/consultation/Consultation .vue';
 import ConsultForm from '../pages/consultation/ConsultForm.vue';
 import ViewParam from '../pages/patient/ViewParams.vue';
 
@@ -177,8 +178,15 @@ const routes = [
       {
         path: 'con/:patientId',
         name: 'Consultation',
+        component: Consultation,
+      }, 
+      {
+        path: 'consultform/:patientId',
+        name: 'ConsultForm',
         component: ConsultForm,
-      }, {
+      },
+      
+      {
         path: 'vparem/:patientId',
         name: 'ViewParams',
         component: ViewParam,

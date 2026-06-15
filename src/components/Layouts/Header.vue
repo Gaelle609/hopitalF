@@ -40,360 +40,7 @@
           </ul>
         </div>
         <div class="ms-auto"></div>
-        <!-- <div
-          class="input-group input-group-md width-300 rounded search-wrap d-none d-xxl-flex mx-2"
-        >
-          <span class="input-group-text border-0 bg-none"
-            ><i data-feather="search"></i
-          ></span>
-          <input
-            class="form-control pe-0 border-0 bg-none"
-            type="search"
-            placeholder="Type something here..."
-            id="searchglobal"
-          />
-          <div class="dropdown input-group-text border-0 p-0">
-            <button
-              class="dropdown-toggle btn btn-link btn-square no-caret"
-              type="button"
-              id="searchfilter"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              <i data-feather="sliders"></i>
-            </button>
-            <div
-              class="dropdown-menu dropdown-menu-end dropdown-dontclose width-300"
-              aria-labelledby="searchfilter"
-            >
-              <ul class="nav adminuiux-nav" id="searchtab" role="tablist">
-                <li class="nav-item" role="presentation">
-                  <button
-                    class="nav-link active"
-                    id="searchall-tab"
-                    data-bs-toggle="tab"
-                    data-bs-target="#searchall"
-                    type="button"
-                    role="tab"
-                    aria-controls="searchall"
-                    aria-selected="true"
-                  >
-                    All
-                  </button>
-                </li>
-                <li class="nav-item" role="presentation">
-                  <button
-                    class="nav-link"
-                    id="searchorders-tab"
-                    data-bs-toggle="tab"
-                    data-bs-target="#searchorders"
-                    type="button"
-                    role="tab"
-                    aria-controls="searchorders"
-                    aria-selected="false"
-                    tabindex="-1"
-                  >
-                    Orders
-                  </button>
-                </li>
-                <li class="nav-item" role="presentation">
-                  <button
-                    class="nav-link"
-                    id="searchcontacts-tab"
-                    data-bs-toggle="tab"
-                    data-bs-target="#searchcontacts"
-                    type="button"
-                    role="tab"
-                    aria-controls="searchcontacts"
-                    aria-selected="false"
-                    tabindex="-1"
-                  >
-                    Contacts
-                  </button>
-                </li>
-              </ul>
-              <div class="tab-content py-3" id="searchtabContent">
-                <div
-                  class="tab-pane fade active show"
-                  id="searchall"
-                  role="tabpanel"
-                  aria-labelledby="searchall-tab"
-                >
-                  <ul
-                    class="list-group adminuiux-list-group list-group-flush bg-none show"
-                  >
-                    <li class="list-group-item">
-                      <div class="row">
-                        <div class="col">Search apps</div>
-                        <div class="col-auto">
-                          <div class="form-check form-switch">
-                            <input
-                              class="form-check-input"
-                              type="checkbox"
-                              role="switch"
-                              id="isearchswitch1"
-                            />
-                            <label
-                              class="form-check-label"
-                              for="isearchswitch1"
-                            ></label>
-                          </div>
-                        </div>
-                      </div>
-                    </li>
-                    <li class="list-group-item">
-                      <div class="row">
-                        <div class="col">Include Pages</div>
-                        <div class="col-auto">
-                          <div class="form-check form-switch">
-                            <input
-                              class="form-check-input"
-                              type="checkbox"
-                              role="switch"
-                              id="isearchswitch2"
-                              :checked="true"
-                            />
-                            <label
-                              class="form-check-label"
-                              for="isearchswitch2"
-                            ></label>
-                          </div>
-                        </div>
-                      </div>
-                    </li>
-                    <li class="list-group-item">
-                      <div class="row">
-                        <div class="col">Internet resource</div>
-                        <div class="col-auto">
-                          <div class="form-check form-switch">
-                            <input
-                              class="form-check-input"
-                              type="checkbox"
-                              role="switch"
-                              id="isearchswitch3"
-                              :checked="true"
-                            />
-                            <label
-                              class="form-check-label"
-                              for="isearchswitch3"
-                            ></label>
-                          </div>
-                        </div>
-                      </div>
-                    </li>
-                    <li class="list-group-item">
-                      <div class="row">
-                        <div class="col">News and Blogs</div>
-                        <div class="col-auto">
-                          <div class="form-check form-switch">
-                            <input
-                              class="form-check-input"
-                              type="checkbox"
-                              role="switch"
-                              id="isearchswitch4"
-                            />
-                            <label
-                              class="form-check-label"
-                              for="isearchswitch4"
-                            ></label>
-                          </div>
-                        </div>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
-                <div
-                  class="tab-pane fade"
-                  id="searchorders"
-                  role="tabpanel"
-                  aria-labelledby="searchorders-tab"
-                >
-                  <ul
-                    class="list-group adminuiux-list-group list-group-flush bg-none show"
-                  >
-                    <li class="list-group-item">
-                      <div class="row">
-                        <div class="col">Show order ID</div>
-                        <div class="col-auto">
-                          <div class="form-check form-switch">
-                            <input
-                              class="form-check-input"
-                              type="checkbox"
-                              role="switch"
-                              id="isearchswitch5"
-                            />
-                            <label
-                              class="form-check-label"
-                              for="isearchswitch5"
-                            ></label>
-                          </div>
-                        </div>
-                      </div>
-                    </li>
-                    <li class="list-group-item">
-                      <div class="row">
-                        <div class="col">International Order</div>
-                        <div class="col-auto">
-                          <div class="form-check form-switch">
-                            <input
-                              class="form-check-input"
-                              type="checkbox"
-                              role="switch"
-                              id="isearchswitch6"
-                              :checked="true"
-                            />
-                            <label
-                              class="form-check-label"
-                              for="isearchswitch6"
-                            ></label>
-                          </div>
-                        </div>
-                      </div>
-                    </li>
-                    <li class="list-group-item">
-                      <div class="row">
-                        <div class="col">Taxable Product</div>
-                        <div class="col-auto">
-                          <div class="form-check form-switch">
-                            <input
-                              class="form-check-input"
-                              type="checkbox"
-                              role="switch"
-                              id="isearchswitch7"
-                              :checked="true"
-                            />
-                            <label
-                              class="form-check-label"
-                              for="isearchswitch7"
-                            ></label>
-                          </div>
-                        </div>
-                      </div>
-                    </li>
-                    <li class="list-group-item">
-                      <div class="row">
-                        <div class="col">Published Product</div>
-                        <div class="col-auto">
-                          <div class="form-check form-switch">
-                            <input
-                              class="form-check-input"
-                              type="checkbox"
-                              role="switch"
-                              id="isearchswitch8"
-                            />
-                            <label
-                              class="form-check-label"
-                              for="isearchswitch8"
-                            ></label>
-                          </div>
-                        </div>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
-                <div
-                  class="tab-pane fade"
-                  id="searchcontacts"
-                  role="tabpanel"
-                  aria-labelledby="searchcontacts-tab"
-                >
-                  <ul
-                    class="list-group adminuiux-list-group list-group-flush bg-none show"
-                  >
-                    <li class="list-group-item">
-                      <div class="row">
-                        <div class="col">Have email ID</div>
-                        <div class="col-auto">
-                          <div class="form-check form-switch">
-                            <input
-                              class="form-check-input"
-                              type="checkbox"
-                              role="switch"
-                              id="isearchswitch9"
-                            />
-                            <label
-                              class="form-check-label"
-                              for="isearchswitch9"
-                            ></label>
-                          </div>
-                        </div>
-                      </div>
-                    </li>
-                    <li class="list-group-item">
-                      <div class="row">
-                        <div class="col">Have phone number</div>
-                        <div class="col-auto">
-                          <div class="form-check form-switch">
-                            <input
-                              class="form-check-input"
-                              type="checkbox"
-                              role="switch"
-                              id="isearchswitch10"
-                              :checked="true"
-                            />
-                            <label
-                              class="form-check-label"
-                              for="isearchswitch10"
-                            ></label>
-                          </div>
-                        </div>
-                      </div>
-                    </li>
-                    <li class="list-group-item">
-                      <div class="row">
-                        <div class="col">Photo available</div>
-                        <div class="col-auto">
-                          <div class="form-check form-switch">
-                            <input
-                              class="form-check-input"
-                              type="checkbox"
-                              role="switch"
-                              id="isearchswitch11"
-                              :checked="true"
-                            />
-                            <label
-                              class="form-check-label"
-                              for="isearchswitch11"
-                            ></label>
-                          </div>
-                        </div>
-                      </div>
-                    </li>
-                    <li class="list-group-item">
-                      <div class="row">
-                        <div class="col">Referral</div>
-                        <div class="col-auto">
-                          <div class="form-check form-switch">
-                            <input
-                              class="form-check-input"
-                              type="checkbox"
-                              role="switch"
-                              id="isearchswitch12"
-                            />
-                            <label
-                              class="form-check-label"
-                              for="isearchswitch12"
-                            ></label>
-                          </div>
-                        </div>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-              <div class="">
-                <div class="row">
-                  <div class="col">
-                    <button class="btn btn-link">Reset</button>
-                  </div>
-                  <div class="col-auto">
-                    <button class="btn btn-theme">Apply</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div> -->
+        
         <div class="ms-auto">
           <button
             class="btn btn-link btn-square btnsunmoon btn-link-header"
@@ -434,41 +81,86 @@
               aria-expanded="false"
             >
               <i data-feather="bell"></i>
-              <span
-                class="position-absolute top-0 end-0 badge rounded-pill bg-danger p-1"
-                ><small>9+</small>
-                <span class="visually-hidden">unread messages</span></span
-              >
+        
+
+              <span v-if="notifications.length" class="position-absolute top-0 end-0 badge rounded-pill bg-danger p-1"
+                >
+                  <small>{{ notifications.length }}</small>
+                </span>
             </button>
             <ul
-              class="dropdown-menu dropdown-menu-end notification-dd sm-mi-95px"
-            >
-              <li>
-                <a class="dropdown-item" href="#">
-                  <p class="mb-0">
-                    Congratulation! Your property
-                    <span class="fw-bold">#H10215</span> has reached 1000 views.
-                  </p>
-                  <span class="row"
-                    ><span class="col"
-                      ><span
-                        class="badge badge-light rounded-pill text-bg-warning small"
-                        >Directory</span
-                      ></span
-                    >
-                    <span class="col-auto small opacity-50">1:00 am</span></span
-                  >
-                </a>
-              </li>
-              <li class="text-center">
-                <button
-                  class="btn btn-link text-center"
-                  onclick="notifcationAll()"
-                >
-                  View all <i class="bi bi-arrow-right fs-14"></i>
-                </button>
-              </li>
-            </ul>
+  class="dropdown-menu dropdown-menu-end notification-dd shadow border-0 p-0"
+  style="width:400px; max-height:500px; overflow-y:auto;"
+>
+  <li class="p-3 border-bottom bg-light">
+    <h6 class="mb-0 fw-bold">
+      <i class="bi bi-bell-fill text-danger me-2"></i>
+      Notifications
+    </h6>
+  </li>
+
+  <li v-if="notifications.length === 0">
+    <div class="text-center py-4">
+      <i class="bi bi-bell fs-1 text-muted"></i>
+      <p class="text-muted mt-2">
+        Aucune notification
+      </p>
+    </div>
+  </li>
+
+  <li
+  v-for="notification in notifications"
+  :key="notification.id"
+  class="border-bottom"
+>
+  
+   <a href="#"
+    class="dropdown-item py-3"
+    @click.prevent="openConsultation(notification)"
+  >
+    <div class="d-flex">
+
+      <div class="me-3">
+        <div
+          class="rounded-circle bg-light text-white d-flex align-items-center justify-content-center"
+          style="width:50px;height:50px;"
+        >
+          <i class="bi bi-person-fill fs-5"></i>
+        </div>
+      </div>
+
+      <div class="flex-grow-1">
+
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <h6 class="mb-1 fw-bold text-dark">
+              {{ notification.patient.first_name }}
+              {{ notification.patient.last_name }}
+            </h6>
+            <small class="text-muted">
+              {{ notification.patient.age }} ans
+              •
+              {{ notification.patient.quater }}
+            </small>
+          </div>
+          <span class="badge bg-danger">Nouveau</span>
+        </div>
+
+        <p class="mb-1 mt-2 text-secondary">
+          <i class="bi bi-hospital me-1"></i>
+          Patient transféré pour consultation médicale.
+        </p>
+
+        <small class="text-muted">
+          <i class="bi bi-clock me-1"></i>
+          {{ formatNotificationDate(notification.date_envoi) }}
+        </small>
+
+      </div>
+    </div>
+  </a>
+</li>
+</ul>
           </div>
           <div class="dropdown d-inline-block">
             <a
@@ -757,12 +449,105 @@ export default {
     return {
       user: {},
       defaultAvatar: "../../assets/img/avatar.jpg",
-      baseUrl: "http://127.0.0.1:8000/", // ton backend Laravel
+      baseUrl: "http://127.0.0.1:8000/",
+      notifications: [],
     };
   },
+
   methods: {
+    async getNotifications() {
+      try {
+        const response = await fetch(
+          `${this.baseUrl}api/notifications/transfers`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("current_token")}`,
+            },
+          }
+        );
+        const data = await response.json();
+        this.notifications = data;
+      } catch (error) {
+        console.error(error);
+      }
+    },
+
+    openConsultation(notification) {
+      // Fermer le dropdown Bootstrap manuellement
+      document.activeElement?.blur();
+
+      const patientId = notification.patient?.id;
+
+      if (!patientId) {
+        console.error("patientId manquant dans la notification", notification);
+        Swal.fire({
+          icon: "error",
+          title: "Erreur",
+          text: "Impossible d'ouvrir la consultation : patient introuvable.",
+        });
+        return;
+      }
+
+      this.$router.push({
+        name: "Consultation", 
+        params: { patientId: patientId },
+      });
+    },
+
+    async recevoirTransfer(id) {
+      try {
+        const response = await fetch(
+          `${this.baseUrl}api/transfers/${id}/receive`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("current_token")}`,
+            },
+          }
+        );
+
+        if (response.ok) {
+          this.notifications = this.notifications.filter(
+            (item) => item.id !== id
+          );
+          Swal.fire({
+            icon: "success",
+            title: "Transfert reçu",
+            timer: 1500,
+            showConfirmButton: false,
+          });
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    async openConsultation(notification) {
+  document.activeElement?.blur();
+
+  const patientId = notification.patient?.id;
+
+  if (!patientId) {
+    console.error("patientId manquant", notification);
+    Swal.fire({
+      icon: "error",
+      title: "Erreur",
+      text: "Impossible d'ouvrir la consultation : patient introuvable.",
+    });
+    return;
+  }
+
+  // Marquer le transfert comme reçu
+  await this.recevoirTransfer(notification.id);
+
+  // Naviguer vers la page des consultations
+  this.$router.push({
+    name: "Consultation",
+    params: { patientId: patientId },
+  });
+},
+
     async logout() {
-      // Demander confirmation avec SweetAlert
       const result = await Swal.fire({
         title: "Déconnexion",
         text: "Êtes-vous sûr de vouloir vous déconnecter ?",
@@ -774,12 +559,9 @@ export default {
         cancelButtonText: "Annuler",
       });
 
-      if (!result.isConfirmed) {
-        return;
-      }
+      if (!result.isConfirmed) return;
 
       try {
-        // Appeler la route POST /api/logout
         const response = await fetch(`${this.baseUrl}api/logout`, {
           method: "POST",
           headers: {
@@ -789,19 +571,14 @@ export default {
         });
 
         if (response.ok) {
-          // Effacer les données stockées
           localStorage.removeItem("current_user");
           localStorage.removeItem("current_token");
-
-          // Afficher un message de succès
           await Swal.fire({
             title: "Succès",
             text: "Vous avez été déconnecté avec succès.",
             icon: "success",
             confirmButtonColor: "#28a745",
           });
-
-          // Rediriger vers la page de login
           window.location.href = "/";
         } else {
           Swal.fire({
@@ -821,25 +598,89 @@ export default {
         });
       }
     },
+
+    formatNotificationDate(dateString) {
+      const date = new Date(dateString);
+      const now = new Date();
+
+      const sameDay =
+        date.getDate() === now.getDate() &&
+        date.getMonth() === now.getMonth() &&
+        date.getFullYear() === now.getFullYear();
+
+      const yesterday = new Date();
+      yesterday.setDate(now.getDate() - 1);
+
+      const isYesterday =
+        date.getDate() === yesterday.getDate() &&
+        date.getMonth() === yesterday.getMonth() &&
+        date.getFullYear() === yesterday.getFullYear();
+
+      if (sameDay) {
+        return `Aujourd'hui à ${date.toLocaleTimeString("fr-FR", {
+          hour: "2-digit",
+          minute: "2-digit",
+        })}`;
+      }
+
+      if (isYesterday) {
+        return `Hier à ${date.toLocaleTimeString("fr-FR", {
+          hour: "2-digit",
+          minute: "2-digit",
+        })}`;
+      }
+
+      return (
+        date.toLocaleDateString("fr-FR", {
+          day: "2-digit",
+          month: "long",
+          year: "numeric",
+        }) +
+        " à " +
+        date.toLocaleTimeString("fr-FR", {
+          hour: "2-digit",
+          minute: "2-digit",
+        })
+      );
+    },
   },
+
   mounted() {
     const storedUser = localStorage.getItem("current_user");
     if (storedUser) {
       const parsedUser = JSON.parse(storedUser);
-
-      // si le user a une image, on lui ajoute l'URL complète
       if (parsedUser.picture) {
         parsedUser.picture = this.baseUrl + parsedUser.picture;
       }
-
       this.user = parsedUser;
     } else {
-      this.user = {
-        first_name: "Utilisateur",
-        last_name: "",
-        picture: null,
-      };
+      this.user = { first_name: "Utilisateur", last_name: "", picture: null };
     }
+
+    // Appel immédiat + polling toutes les 10s
+    this.getNotifications();
+    setInterval(() => {
+      this.getNotifications();
+    }, 10000);
   },
 };
 </script>
+<style scoped>
+.notification-dd .dropdown-item {
+  transition: all 0.2s ease;
+}
+
+.notification-dd .dropdown-item:hover {
+  background: #f8f9fa;
+  transform: translateX(4px);
+}
+
+.notification-dd::-webkit-scrollbar {
+  width: 5px;
+}
+
+.notification-dd::-webkit-scrollbar-thumb {
+  background: #d0d0d0;
+  border-radius: 20px;
+}
+</style>

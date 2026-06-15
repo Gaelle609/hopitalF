@@ -453,7 +453,7 @@
                 </div>
               </div>
 
-              <div class="row mb-3">
+              <!-- <div class="row mb-3">
                 <div class="col-12">
                   <label class="form-label">Statut</label>
                   <select v-model="consultation.statut" class="form-select">
@@ -461,7 +461,7 @@
                     <option value="Desactiver">Désactiver</option>
                   </select>
                 </div>
-              </div>
+              </div> -->
             </div>
           </div>
 
@@ -572,8 +572,7 @@ export default {
         haemo: '',
         tpi: '',
         dateRDV: '',
-        nombreJourHosp: '',
-        statut: 'Activer'
+        nombreJourHosp: ''
       }
     };
   },
@@ -589,70 +588,63 @@ export default {
   },
 
   methods: {
-    async loadPatient() {
+   async loadPatient() {
   this.loading = true;
 
   try {
-
-    const consultationId = localStorage.getItem("current_consultation_id");
-
     const token = localStorage.getItem("current_token");
+    const patientId = this.$route.params.patientId; // ← utiliser le param de route
 
-    if (!consultationId) {
+    if (!patientId) {
       this.$swal.fire({
         icon: "warning",
-        title: "Consultation non trouvée",
-        text: "Veuillez d'abord saisir les paramètres du patient."
+        title: "Patient non trouvé",
+        text: "Aucun patient sélectionné. Veuillez recommencer."
       });
-
       this.$router.push("/patient/parameter");
       return;
     }
 
-    // récupérer la consultation
+    // Même endpoint que ConsultationPatient
     const response = await axios.get(
-      `${this.baseUrl}api/consultations/${consultationId}`,
+      `${this.baseUrl}api/pat/${patientId}/params`,
       {
         headers: { Authorization: `Bearer ${token}` }
       }
     );
 
-    const consultationData = response.data.data.consultation;
+    const data = response.data.data.patient;
 
-    console.log("Consultation chargée :", consultationData);
-
-    // remplir patient
+    // Remplir les infos patient
     this.patient = {
-      id: consultationData.patient_id,
-      first_name: consultationData.first_name,
-      last_name: consultationData.last_name,
-      phone: consultationData.phone,
-      gender: consultationData.gender,
-      slug: consultationData.slug,
-      created_at: consultationData.created_at,
-      temperature: consultationData.temperature,
-      poids: consultationData.poids,
-      tension: consultationData.tension,
-      signe: consultationData.signe
+      id: data.id,
+      first_name: data.first_name,
+      last_name: data.last_name,
+      phone: data.phone,
+      gender: data.gender,
+      slug: data.slug,
+      created_at: data.created_at,
+      temperature: data.parametre?.[0]?.temperature ?? null,
+      poids: data.parametre?.[0]?.poids ?? null,
+      tension: data.parametre?.[0]?.tension ?? null,
+      signe: data.parametre?.[0]?.autre ?? null,
     };
 
-    // remplir formulaire
-    this.consultation = {
-      ...this.consultation,
-      ...consultationData,
-      patient_id: consultationData.patient_id
-    };
+    // Pré-remplir le formulaire avec l'id patient
+    this.consultation.patient_id = data.id;
+
+    // Récupérer la dernière consultation si elle existe
+    if (data.consultation && data.consultation.length > 0) {
+      this.lastConsultation = data.consultation[0];
+    }
 
   } catch (error) {
-
     console.error(error);
-
     this.$swal.fire({
       icon: "error",
       title: "Erreur",
-      text: "Erreur lors du chargement de la consultation."
+      text: "Impossible de charger les données du patient."
     });
-
   } finally {
     this.loading = false;
   }
@@ -730,62 +722,51 @@ export default {
     },
 
     async submitConsultation() {
-      if (!this.validateForm()) {
-        this.$swal.fire({
-          icon: 'warning',
-          title: 'Validation',
-          text: 'Veuillez remplir tous les champs requis.',
-        });
-        return;
-      }
+  if (!this.validateForm()) {
+    this.$swal.fire({
+      icon: 'warning',
+      title: 'Validation',
+      text: 'Veuillez remplir tous les champs requis.',
+    });
+    return;
+  }
 
-      this.submitting = true;
-      try {
-        const token = localStorage.getItem('current_token');
-        const consultationId = localStorage.getItem('current_consultation_id');
+  this.submitting = true;
+  try {
+    const token = localStorage.getItem('current_token');
 
-        // Nettoyer les données avant envoi
-        const payload = { ...this.consultation };
+    const payload = { ...this.consultation };
 
-        // Convertir les valeurs vides en null pour les champs optionnels
-        Object.keys(payload).forEach(key => {
-          if (payload[key] === '') {
-            payload[key] = null;
-          }
-        });
+    Object.keys(payload).forEach(key => {
+      if (payload[key] === '') payload[key] = null;
+    });
 
-        // Mettre à jour la consultation existante
-        const response = await axios.post(
-          `${this.baseUrl}api/consultations`,
-          payload,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
+    // POST pour créer une nouvelle consultation
+    await axios.post(
+      `${this.baseUrl}api/consultations`,
+      payload,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
 
-        this.$swal.fire({
-          icon: 'success',
-          title: 'Succès',
-          text: 'Consultation mise à jour avec succès!',
-        });
+    this.$swal.fire({
+      icon: 'success',
+      title: 'Succès',
+      text: 'Consultation enregistrée avec succès!'
+    });
 
-        // Nettoyer le localStorage et rediriger
-        localStorage.removeItem('current_consultation_id');
-        this.$router.push('/consultation/list');
+    this.$router.push('/consultation/list');
 
-      } catch (error) {
-        console.error(error);
-        this.$swal.fire({
-          icon: 'error',
-          title: 'Erreur',
-          text:
-            error.response?.data?.message ||
-            'Erreur lors de la mise à jour de la consultation.',
-        });
-      } finally {
-        this.submitting = false;
-      }
-    },
+  } catch (error) {
+    console.error(error);
+    this.$swal.fire({
+      icon: 'error',
+      title: 'Erreur',
+      text: error.response?.data?.message || 'Erreur lors de l\'enregistrement.'
+    });
+  } finally {
+    this.submitting = false;
+  }
+},
 
     formatDate(date) {
       if (!date) return 'N/A';
